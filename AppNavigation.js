@@ -5,8 +5,11 @@ import Onboarding from "./screens/Onboarding";
 import Homescreen from "./screens/Homescreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
-import { FontAwesome5 } from "@expo/vector-icons";
+import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import { createStackNavigator } from "@react-navigation/stack";
+import Loggingscreen from "./screens/Loggingscreen";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import Profilescreen from "./screens/Profilescreen";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -16,22 +19,41 @@ const TabNavigator = () => {
     <Tab.Navigator
       initialRouteName="Home"
       screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
+        tabBarIcon: ({ focused, size }) => {
           let iconName;
           if (route.name === "Home") {
-            iconName = focused ? "home" : "home-outline";
+            iconName = focused ? "home-sharp" : "home-outline";
+          } else if (route.name === "Log") {
+            iconName = focused ? "analytics" : "analytics-outline";
+          } else if (route.name === "Profile") {
+            iconName = focused
+              ? "person-circle-sharp"
+              : "person-circle-outline";
           }
-          return <FontAwesome5 name={iconName} size={size} color={color} />;
+          let color = focused ? "#1d1d1d" : "#1e1e1e";
+          return <Ionicons name={iconName} size={size} />;
         },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: "500",
+        },
+        tabBarActiveTintColor: "red",
+        tabBarInactiveTintColor: "#1d1d1d",
       })}
-      tabBarOptions={{
-        activeTintColor: "tomato",
-        inactiveTintColor: "gray",
-      }}
     >
       <Tab.Screen
         name="Home"
         component={Homescreen}
+        options={{ headerShown: false }}
+      />
+      <Tab.Screen
+        name="Log"
+        component={Loggingscreen}
+        options={{ headerShown: false }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={Profilescreen}
         options={{ headerShown: false }}
       />
     </Tab.Navigator>
@@ -60,12 +82,12 @@ const StackNavigator = () => {
     );
   }
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {isOnboarded ? (
-        <Stack.Screen name="StartPage" component={TabNavigator} />
-      ) : (
-        <Stack.Screen name="Onboarding" component={Onboarding} />
-      )}
+    <Stack.Navigator
+      initialRouteName={isOnboarded ? "StartPage" : "Onboarding"}
+      screenOptions={{ headerShown: false }}
+    >
+      <Stack.Screen name="StartPage" component={TabNavigator} />
+      <Stack.Screen name="Onboarding" component={Onboarding} />
     </Stack.Navigator>
   );
 };

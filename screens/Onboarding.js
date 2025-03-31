@@ -1,4 +1,12 @@
-import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  Alert,
+  KeyboardAvoidingView,
+} from "react-native";
 import React, { useState } from "react";
 import { FontAwesome5 } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -35,7 +43,7 @@ export default function Onboarding() {
       await AsyncStorage.setItem("onboarding", "1");
       await AsyncStorage.setItem("profile", savedProfile);
       console.log("Profile submitted:", savedProfile);
-      navigation.navigate("Home");
+      navigation.navigate("StartPage");
     } catch (error) {
       console.error("Error saving profile:", error);
     }
@@ -50,6 +58,7 @@ export default function Onboarding() {
           style={styles.input}
           placeholder="Enter your name"
           value={profile.name}
+          clearButtonMode="while-editing"
           onChangeText={(text) => handleChange("name", text)}
         />
       </View>
@@ -83,6 +92,8 @@ export default function Onboarding() {
           style={styles.input}
           placeholder="Enter your height (cm)"
           keyboardType="numeric"
+          returnKeyType="done"
+          clearButtonMode="while-editing"
           value={profile.height}
           onChangeText={(text) => handleChange("height", text)}
         />
@@ -98,6 +109,8 @@ export default function Onboarding() {
           style={styles.input}
           placeholder="Enter your weight (kg)"
           keyboardType="numeric"
+          returnKeyType="done"
+          clearButtonMode="while-editing"
           value={profile.weight}
           onChangeText={(text) => handleChange("weight", text)}
         />
@@ -111,7 +124,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    justifyContent: "center",
+    justifyContent: "flex-start",
+    marginTop: 50,
   },
   title: {
     fontSize: 24,
