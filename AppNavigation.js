@@ -1,14 +1,13 @@
-import { View, Text, ActivityIndicator } from "react-native";
-import React, { useEffect, useState } from "react";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Onboarding from "./screens/Onboarding";
-import Homescreen from "./screens/Homescreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
-import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import { createStackNavigator } from "@react-navigation/stack";
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator } from "react-native";
+import Homescreen from "./screens/Homescreen";
 import Loggingscreen from "./screens/Loggingscreen";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import Onboarding from "./screens/Onboarding";
 import Profilescreen from "./screens/Profilescreen";
 
 const Stack = createStackNavigator();

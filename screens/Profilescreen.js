@@ -1,16 +1,15 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  ActivityIndicator,
-  SafeAreaView,
-  TouchableOpacity,
-} from "react-native";
-import React, { useCallback, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
-import { levelsdata } from "../data/levels";
+import React, { useCallback, useState } from "react";
+import {
+  ActivityIndicator,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import LevelCard from "../components/LevelCard";
+import { levelsdata } from "../data/levels";
 
 const levels = levelsdata;
 

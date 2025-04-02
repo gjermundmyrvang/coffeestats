@@ -1,19 +1,19 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  SafeAreaView,
-  TouchableOpacity,
-} from "react-native";
-import React, { useCallback, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
+import React, { useCallback, useState } from "react";
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import History from "../components/History";
 import Stats from "../components/Stats";
 
 export default function Loggingscreen() {
   const [entries, setEntries] = useState([]);
-  const [view, setView] = useState("history"); // Toggle between "history" and "stats"
+  const [view, setView] = useState("history");
 
   useFocusEffect(
     useCallback(() => {
@@ -28,7 +28,6 @@ export default function Loggingscreen() {
         const parsed = JSON.parse(storedData).sort(
           (a, b) => new Date(a.date) - new Date(b.date)
         );
-        console.log("Parsed coffeedata:", parsed);
         setEntries(parsed);
       }
     } catch (error) {

@@ -1,6 +1,6 @@
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import React from "react";
-import { FontAwesome, FontAwesome5, Ionicons } from "@expo/vector-icons"; // Make sure to install Ionicons/FontAwesome5
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 export default function Stats({ entries }) {
   if (entries.length === 0) {
@@ -14,37 +14,31 @@ export default function Stats({ entries }) {
     );
   }
 
-  // Total coffees drunk
   const totalCoffees = entries.length;
 
-  // Total per coffee type
   const coffeeTypes = entries.reduce((acc, entry) => {
     acc[entry.name] = (acc[entry.name] || 0) + 1;
     return acc;
   }, {});
 
-  // Total caffeine consumed
   const totalCaffeine = entries
     .reduce((sum, entry) => sum + parseFloat(entry.sumMg), 0)
     .toFixed(1);
 
-  // First and last coffee logged
   const sortedByDate = [...entries].sort(
     (a, b) => new Date(a.date) - new Date(b.date)
   );
   const firstCoffeeDate = sortedByDate[0]?.date;
   const lastCoffeeDate = sortedByDate[sortedByDate.length - 1]?.date;
 
-  // Earliest and latest coffee by time
   const sortedByTime = [...entries].sort((a, b) =>
     a.time.localeCompare(b.time)
   );
   const earliestCoffeeTime = sortedByTime[0]?.time;
   const latestCoffeeTime = sortedByTime[sortedByTime.length - 1]?.time;
 
-  // Most consumed time span
   const timeFrequency = entries.reduce((acc, entry) => {
-    const hour = entry.time.split(":")[0]; // Extract hour
+    const hour = entry.time.split(":")[0];
     acc[hour] = (acc[hour] || 0) + 1;
     return acc;
   }, {});
@@ -53,7 +47,6 @@ export default function Stats({ entries }) {
     timeFrequency[a] > timeFrequency[b] ? a : b
   );
 
-  // Coffee that provided the highest total caffeine
   const caffeineByType = entries.reduce((acc, entry) => {
     acc[entry.name] = (acc[entry.name] || 0) + parseFloat(entry.sumMg);
     return acc;

@@ -1,17 +1,9 @@
-import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  StyleSheet,
-  Alert,
-  KeyboardAvoidingView,
-} from "react-native";
-import React, { useState } from "react";
 import { FontAwesome5 } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useNavigation } from "@react-navigation/native";
+import React, { useState } from "react";
+import { Alert, Button, StyleSheet, Text, TextInput, View } from "react-native";
 
 export default function Onboarding() {
   const [date, setDate] = useState(new Date(1598051730000));
