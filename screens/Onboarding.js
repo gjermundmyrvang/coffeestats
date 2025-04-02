@@ -20,6 +20,7 @@ export default function Onboarding() {
     birth: "",
     height: "",
     weight: "",
+    points: "1",
   });
   const navigation = useNavigation();
 

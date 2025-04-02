@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, SafeAreaView, FlatList } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 
@@ -7,7 +7,7 @@ export default function Loggingscreen() {
   const [entries, setEntries] = useState([]);
 
   useFocusEffect(
-    React.useCallback(() => {
+    useCallback(() => {
       loadCoffeeLogs();
     }, [])
   );

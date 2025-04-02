@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { coffeedata } from "../data/coffeedata";
+import { useFocusEffect } from "@react-navigation/native";
 
 const coffeeData = coffeedata;
 
@@ -22,14 +23,21 @@ export default function Homescreen() {
   const [selectedCoffee, setSelectedCoffee] = useState(coffeeData[0]);
   const [selectedSize, setSelectedSize] = useState(0);
 
-  useEffect(() => {
-    const loadProfile = async () => {
+  useFocusEffect(
+    useCallback(() => {
+      loadProfile();
+    }, [])
+  );
+
+  const loadProfile = async () => {
+    try {
       const savedProfile = await AsyncStorage.getItem("profile");
       if (savedProfile) setProfile(JSON.parse(savedProfile));
       setLoading(false);
-    };
-    loadProfile();
-  }, []);
+    } catch (error) {
+      console.log("Error loading profile:", error);
+    }
+  };
 
   useEffect(() => {
     const currentHour = new Date().getHours();
@@ -74,6 +82,7 @@ export default function Homescreen() {
         size={selectedSize}
         visible={modalVisible}
         setVisible={setModalVisible}
+        profile={profile}
       />
     </SafeAreaView>
   );
@@ -126,9 +135,8 @@ const CoffeeCard = ({
   );
 };
 
-const BottomModal = ({ coffee, size, visible, setVisible }) => {
+const BottomModal = ({ coffee, size, visible, setVisible, profile }) => {
   const calculateCaffeine = (size) => {
-    console.log(size);
     return (coffee.caffeine_mg * size).toFixed(1);
   };
 
@@ -150,15 +158,30 @@ const BottomModal = ({ coffee, size, visible, setVisible }) => {
       const existingLogs = await AsyncStorage.getItem("coffeeLogs");
       const logs = existingLogs ? JSON.parse(existingLogs) : [];
 
-      logs.push(newEntry); // Append new entry
+      logs.push(newEntry);
 
       await AsyncStorage.setItem("coffeeLogs", JSON.stringify(logs));
+      await addPoints();
       console.log("Saved coffee:", newEntry);
       setVisible(!visible);
     } catch (error) {
       console.log("Failed saving coffee", error);
       setVisible(!visible);
     }
+  };
+
+  const addPoints = async () => {
+    const currentPoints = +profile.points;
+    console.log("Current points:", currentPoints);
+    const newPoints = currentPoints + 20;
+    console.log("New points:", currentPoints);
+    await AsyncStorage.setItem(
+      "profile",
+      JSON.stringify({
+        ...profile,
+        points: newPoints,
+      })
+    );
   };
 
   return (
