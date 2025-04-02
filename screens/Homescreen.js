@@ -12,6 +12,7 @@ import {
   View,
 } from "react-native";
 import { coffeedata } from "../data/coffeedata";
+import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 
 const coffeeData = coffeedata;
 
@@ -110,9 +111,15 @@ const CoffeeCard = ({
     >
       <View style={styles.cardHeader}>
         <Text style={styles.coffeeName}>{coffee.name}</Text>
+        {expanded ? (
+          <FontAwesome5 name="arrow-up" size={20} color="#1d1d1d" />
+        ) : (
+          <FontAwesome5 name="arrow-down" size={20} color="#e0e0e0" />
+        )}
       </View>
 
       <View style={styles.sizesContainer}>
+        <FontAwesome5 name="coffee" size={24} color="#6b4f4f" />
         {coffee.sizes_ml.map((size) => (
           <TouchableOpacity
             key={size}
@@ -149,7 +156,7 @@ const BottomModal = ({
   };
 
   const handleCloseModal = () => {
-    setVisible(false); // Only close modal when triggered
+    setVisible(false);
   };
 
   const handleSave = async () => {
@@ -203,6 +210,12 @@ const BottomModal = ({
       <View style={styles.modalOverlay}>
         <View style={styles.modalContainer}>
           <Text style={styles.modalTitle}>{coffee.name}</Text>
+          <TouchableOpacity
+            onPress={handleCloseModal}
+            style={{ position: "absolute", top: 5, right: 5 }}
+          >
+            <Ionicons name="close-circle" size={42} color={"#9A1A1A"} />
+          </TouchableOpacity>
           <Text style={styles.modalContent}>Size: {size}ml</Text>
           <Text style={styles.modalContent}>
             Total caffeine: {calculateCaffeine(size)}mg
@@ -213,19 +226,10 @@ const BottomModal = ({
           <Text style={styles.modalContent}>
             Time: {new Date().toLocaleTimeString()}
           </Text>
-          <View style={styles.buttons}>
-            {/* Save Button */}
-            <TouchableOpacity
-              style={[styles.closeButton, { backgroundColor: "#4CAF50" }]}
-              onPress={handleSave}
-            >
-              <Text style={styles.closeButtonText}>Log</Text>
-            </TouchableOpacity>
-            {/* Close Button */}
-            <TouchableOpacity style={styles.closeButton} onPress={addPoints}>
-              <Text style={styles.closeButtonText}>Cancel</Text>
-            </TouchableOpacity>
-          </View>
+          {/* Save Button */}
+          <TouchableOpacity style={styles.closeButton} onPress={handleSave}>
+            <Text style={styles.closeButtonText}>Log coffee</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </Modal>
@@ -285,18 +289,22 @@ const styles = StyleSheet.create({
   },
   sizesContainer: {
     flexDirection: "row",
+    alignItems: "center",
     marginTop: 10,
+    gap: 5,
   },
   sizeButton: {
-    backgroundColor: "#ddd",
+    backgroundColor: "#6b4f4f",
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 5,
-    marginRight: 8,
+    marginRight: 5,
   },
   sizeText: {
     fontSize: 14,
-    fontWeight: "bold",
+    fontWeight: "500",
+    color: "#fafafa",
+    fontStyle: "italic",
   },
   expandedContent: {
     marginTop: 10,
@@ -311,35 +319,40 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.7)",
   },
   modalContainer: {
-    backgroundColor: "#fafafa",
-    padding: 20,
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
+    backgroundColor: "#fff",
+    padding: 25,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
     alignItems: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: -2 },
+    shadowRadius: 10,
+    elevation: 5,
+    position: "relative",
   },
   modalTitle: {
-    fontSize: 22,
-    fontWeight: "bold",
-    marginBottom: 10,
+    fontSize: 24,
+    fontWeight: "600",
+    marginBottom: 15,
+    color: "#333",
   },
   modalContent: {
     fontSize: 16,
-    color: "#444",
-    marginBottom: 10,
-  },
-  buttons: {
-    flexDirection: "row",
-    gap: 5,
+    color: "#555",
+    textAlign: "center",
+    marginBottom: 20,
   },
   closeButton: {
-    backgroundColor: "#B0BEC5",
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 20,
+    backgroundColor: "#6b4f4f",
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 8,
   },
   closeButtonText: {
     fontSize: 16,
-    fontWeight: "800",
+    fontWeight: "600",
     color: "#fff",
+    textAlign: "center",
   },
 });
