@@ -18,7 +18,7 @@ const TabNavigator = () => {
     <Tab.Navigator
       initialRouteName="Home"
       screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, size }) => {
+        tabBarIcon: ({ focused, size, color }) => {
           let iconName;
           if (route.name === "Home") {
             iconName = focused ? "home-sharp" : "home-outline";
@@ -29,15 +29,14 @@ const TabNavigator = () => {
               ? "person-circle-sharp"
               : "person-circle-outline";
           }
-          let color = focused ? "#1d1d1d" : "#1e1e1e";
-          return <Ionicons name={iconName} size={size} />;
+          return <Ionicons name={iconName} size={size} color={color} />;
         },
         tabBarLabelStyle: {
           fontSize: 12,
           fontWeight: "500",
         },
-        tabBarActiveTintColor: "red",
-        tabBarInactiveTintColor: "#1d1d1d",
+        tabBarActiveTintColor: "#1D1D1D",
+        tabBarInactiveTintColor: "#6C6C6C",
       })}
     >
       <Tab.Screen
