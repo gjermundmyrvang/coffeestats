@@ -1,10 +1,19 @@
-import { View, Text, StyleSheet, SafeAreaView, FlatList } from "react-native";
-import React, { useCallback, useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+} from "react-native";
+import React, { useCallback, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
+import History from "../components/History";
+import Stats from "../components/Stats";
 
 export default function Loggingscreen() {
   const [entries, setEntries] = useState([]);
+  const [view, setView] = useState("history"); // Toggle between "history" and "stats"
 
   useFocusEffect(
     useCallback(() => {
@@ -16,89 +25,76 @@ export default function Loggingscreen() {
     try {
       const storedData = await AsyncStorage.getItem("coffeeLogs");
       if (storedData) {
-        const parsed = JSON.parse(storedData).sort((a, b) => a.date - b.date);
+        const parsed = JSON.parse(storedData).sort(
+          (a, b) => new Date(a.date) - new Date(b.date)
+        );
         console.log("Parsed coffeedata:", parsed);
         setEntries(parsed);
       }
     } catch (error) {
       console.log("Failed retrieving coffee entries", error);
-      return [];
     }
   };
 
   return (
     <SafeAreaView style={styles.safe}>
-      <View style={styles.container}>
-        <Text style={styles.header}>Coffee Log</Text>
+      {/* Toggle Button */}
+      <View style={styles.toggleContainer}>
+        <TouchableOpacity
+          style={[
+            styles.toggleButton,
+            view === "history" && styles.activeButton,
+          ]}
+          onPress={() => setView("history")}
+        >
+          <Text style={styles.buttonText}>History</Text>
+        </TouchableOpacity>
 
-        {entries.length === 0 ? (
-          <Text style={styles.noEntries}>
-            No entries yet. Start logging! ☕
-          </Text>
-        ) : (
-          <FlatList
-            data={entries}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item }) => <CoffeeCard item={item} />}
-          />
-        )}
+        <TouchableOpacity
+          style={[styles.toggleButton, view === "stats" && styles.activeButton]}
+          onPress={() => setView("stats")}
+        >
+          <Text style={styles.buttonText}>Stats</Text>
+        </TouchableOpacity>
       </View>
+
+      {/* Conditional Rendering */}
+      {view === "history" ? (
+        <History entries={entries} />
+      ) : (
+        <Stats entries={entries} />
+      )}
     </SafeAreaView>
   );
 }
-
-const CoffeeCard = ({ item }) => (
-  <View style={styles.card}>
-    <Text style={styles.coffeeName}>{item.name}</Text>
-    <Text style={styles.caffeine}>{item.sumMg} mg caffeine</Text>
-    <Text style={styles.date}>
-      {item.date} at {item.time}
-    </Text>
-  </View>
-);
 
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
     backgroundColor: "#f8f9fa",
   },
-  container: {
-    flex: 1,
-    padding: 20,
+  toggleContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    paddingVertical: 10,
+    paddingBottom: 15,
+    marginBottom: 20,
+    borderBottomWidth: 1,
+    borderColor: "#E0E0E0",
   },
-  header: {
-    fontSize: 24,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 10,
+  toggleButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginHorizontal: 5,
+    borderRadius: 20,
+    backgroundColor: "#E0E0E0",
   },
-  noEntries: {
-    textAlign: "center",
+  activeButton: {
+    backgroundColor: "#B0B0B0",
+  },
+  buttonText: {
     fontSize: 16,
-    color: "#888",
-    marginTop: 20,
-  },
-  card: {
-    backgroundColor: "#fff",
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 10,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  coffeeName: {
-    fontSize: 18,
     fontWeight: "bold",
-  },
-  caffeine: {
-    fontSize: 14,
-    color: "#555",
-  },
-  date: {
-    fontSize: 12,
-    color: "#888",
+    color: "#333",
   },
 });
