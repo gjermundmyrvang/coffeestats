@@ -6,6 +6,13 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import Animated, {
+  Easing,
+  LightSpeedInLeft,
+  LightSpeedInRight,
+  LightSpeedOutLeft,
+  LightSpeedOutRight,
+} from "react-native-reanimated";
 
 export default function History({ entries }) {
   const [filter, setFilter] = useState("all");
@@ -50,11 +57,24 @@ export default function History({ entries }) {
           data={filter === "all" ? entries : groupedData}
           keyExtractor={(item, index) => index.toString()}
           showsVerticalScrollIndicator={false}
+          initialNumToRender={10}
           renderItem={({ item }) =>
             filter === "all" ? (
-              <CoffeeCard item={item} />
+              <Animated.View
+                entering={LightSpeedInLeft.delay(200)
+                  .duration(500)
+                  .easing(Easing.ease)}
+              >
+                <CoffeeCard item={item} />
+              </Animated.View>
             ) : (
-              <GroupedCoffeeCard item={item} />
+              <Animated.View
+                entering={LightSpeedInLeft.delay(200)
+                  .duration(500)
+                  .easing(Easing.ease)}
+              >
+                <GroupedCoffeeCard item={item} />
+              </Animated.View>
             )
           }
         />
@@ -88,12 +108,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 10,
-  },
-  header: {
-    fontSize: 24,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 10,
+    paddingTop: 10,
   },
   noEntries: {
     textAlign: "center",

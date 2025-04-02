@@ -13,6 +13,12 @@ import {
 } from "react-native";
 import { coffeedata } from "../data/coffeedata";
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
+import Animated, {
+  Easing,
+  SlideInRight,
+  StretchInY,
+  StretchOutY,
+} from "react-native-reanimated";
 
 const coffeeData = coffeedata;
 
@@ -70,12 +76,16 @@ export default function Homescreen() {
         data={coffeeData}
         keyExtractor={(item) => item.name}
         renderItem={({ item }) => (
-          <CoffeeCard
-            coffee={item}
-            setModalVisible={setModalVisible}
-            setSelectedCoffee={setSelectedCoffee}
-            setSelectedSize={setSelectedSize}
-          />
+          <Animated.View
+            entering={SlideInRight.duration(500).easing(Easing.ease)}
+          >
+            <CoffeeCard
+              coffee={item}
+              setModalVisible={setModalVisible}
+              setSelectedCoffee={setSelectedCoffee}
+              setSelectedSize={setSelectedSize}
+            />
+          </Animated.View>
         )}
       />
       <BottomModal
@@ -112,9 +122,9 @@ const CoffeeCard = ({
       <View style={styles.cardHeader}>
         <Text style={styles.coffeeName}>{coffee.name}</Text>
         {expanded ? (
-          <FontAwesome5 name="arrow-up" size={20} color="#1d1d1d" />
+          <Ionicons name="chevron-up" size={20} color="#1d1d1d" />
         ) : (
-          <FontAwesome5 name="arrow-down" size={20} color="#e0e0e0" />
+          <Ionicons name="chevron-down" size={20} color="#e0e0e0" />
         )}
       </View>
 
@@ -212,20 +222,32 @@ const BottomModal = ({
           <Text style={styles.modalTitle}>{coffee.name}</Text>
           <TouchableOpacity
             onPress={handleCloseModal}
-            style={{ position: "absolute", top: 5, right: 5 }}
+            style={{ position: "absolute", top: 15, right: 15 }}
           >
             <Ionicons name="close-circle" size={42} color={"#9A1A1A"} />
           </TouchableOpacity>
-          <Text style={styles.modalContent}>Size: {size}ml</Text>
-          <Text style={styles.modalContent}>
-            Total caffeine: {calculateCaffeine(size)}mg
-          </Text>
-          <Text style={styles.modalContent}>
-            Date: {new Date().toLocaleDateString()}
-          </Text>
-          <Text style={styles.modalContent}>
-            Time: {new Date().toLocaleTimeString()}
-          </Text>
+          <View style={styles.row}>
+            <Ionicons name="resize-sharp" size={20} color={"#555"} />
+            <Text style={styles.modalContent}>Size: {size}ml</Text>
+          </View>
+          <View style={styles.row}>
+            <Ionicons name="pulse-sharp" size={20} color={"#555"} />
+            <Text style={styles.modalContent}>
+              Total caffeine: {calculateCaffeine(size)}mg
+            </Text>
+          </View>
+          <View style={styles.row}>
+            <Ionicons name="calendar-sharp" size={20} color={"#555"} />
+            <Text style={styles.modalContent}>
+              Date: {new Date().toLocaleDateString()}
+            </Text>
+          </View>
+          <View style={styles.row}>
+            <Ionicons name="time-sharp" size={20} color={"#555"} />
+            <Text style={styles.modalContent}>
+              Time: {new Date().toLocaleTimeString()}
+            </Text>
+          </View>
           {/* Save Button */}
           <TouchableOpacity style={styles.closeButton} onPress={handleSave}>
             <Text style={styles.closeButtonText}>Log coffee</Text>
@@ -319,15 +341,15 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.7)",
   },
   modalContainer: {
-    backgroundColor: "#fff",
+    backgroundColor: "#e0e0e0",
     padding: 25,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: -2 },
-    shadowRadius: 10,
+    alignItems: "flex-start",
+    shadowColor: "#FFA641",
+    shadowOpacity: 0.4,
+    shadowOffset: { width: 0, height: -6 },
+    shadowRadius: 18,
     elevation: 5,
     position: "relative",
   },
@@ -343,11 +365,19 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 20,
   },
+  row: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignContent: "center",
+    gap: 5,
+  },
   closeButton: {
     backgroundColor: "#6b4f4f",
+    width: "100%",
     paddingVertical: 12,
     paddingHorizontal: 30,
     borderRadius: 8,
+    marginBottom: 15,
   },
   closeButtonText: {
     fontSize: 16,
