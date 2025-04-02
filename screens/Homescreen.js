@@ -83,6 +83,7 @@ export default function Homescreen() {
         visible={modalVisible}
         setVisible={setModalVisible}
         profile={profile}
+        setProfile={setProfile}
       />
     </SafeAreaView>
   );
@@ -135,7 +136,14 @@ const CoffeeCard = ({
   );
 };
 
-const BottomModal = ({ coffee, size, visible, setVisible, profile }) => {
+const BottomModal = ({
+  coffee,
+  size,
+  visible,
+  setVisible,
+  profile,
+  setProfile,
+}) => {
   const calculateCaffeine = (size) => {
     return (coffee.caffeine_mg * size).toFixed(1);
   };
@@ -174,7 +182,8 @@ const BottomModal = ({ coffee, size, visible, setVisible, profile }) => {
     const currentPoints = +profile.points;
     console.log("Current points:", currentPoints);
     const newPoints = currentPoints + 20;
-    console.log("New points:", currentPoints);
+    console.log("New points:", newPoints);
+    setProfile({ ...profile, points: newPoints });
     await AsyncStorage.setItem(
       "profile",
       JSON.stringify({
@@ -213,10 +222,7 @@ const BottomModal = ({ coffee, size, visible, setVisible, profile }) => {
               <Text style={styles.closeButtonText}>Log</Text>
             </TouchableOpacity>
             {/* Close Button */}
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={handleCloseModal} // Use the proper handler
-            >
+            <TouchableOpacity style={styles.closeButton} onPress={addPoints}>
               <Text style={styles.closeButtonText}>Cancel</Text>
             </TouchableOpacity>
           </View>
