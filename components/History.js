@@ -60,13 +60,7 @@ export default function History({ entries }) {
           initialNumToRender={10}
           renderItem={({ item }) =>
             filter === "all" ? (
-              <Animated.View
-                entering={LightSpeedInLeft.delay(200)
-                  .duration(500)
-                  .easing(Easing.ease)}
-              >
-                <CoffeeCard item={item} />
-              </Animated.View>
+              <CoffeeCard item={item} />
             ) : (
               <Animated.View
                 entering={LightSpeedInLeft.delay(200)
@@ -84,24 +78,30 @@ export default function History({ entries }) {
 }
 
 const CoffeeCard = ({ item }) => (
-  <View style={styles.card}>
+  <Animated.View
+    entering={LightSpeedInLeft.delay(200).duration(500).easing(Easing.ease)}
+    style={styles.card}
+  >
     <Text style={styles.coffeeName}>{item.name}</Text>
     <Text style={styles.caffeine}>{item.sumMg} mg caffeine</Text>
     <Text style={styles.date}>
       {item.date} at {item.time}
     </Text>
-  </View>
+  </Animated.View>
 );
 
 const GroupedCoffeeCard = ({ item }) => (
-  <View style={styles.card}>
+  <Animated.View
+    entering={LightSpeedInLeft.delay(200).duration(500).easing(Easing.ease)}
+    style={styles.card}
+  >
     <Text style={styles.coffeeName}>
       {item.name} ({item.count}x)
     </Text>
     <Text style={styles.caffeine}>
       Total caffeine: {item.sumMg.toFixed(1)}mg
     </Text>
-  </View>
+  </Animated.View>
 );
 
 const styles = StyleSheet.create({
