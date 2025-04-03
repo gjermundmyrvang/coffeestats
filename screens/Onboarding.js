@@ -39,6 +39,9 @@ export default function Onboarding() {
       navigation.navigate("StartPage");
     } catch (error) {
       console.error("Error saving profile:", error);
+      Alert.alert(
+        "An error occurred while saving your profile. Please try again."
+      );
     }
   };
 
@@ -75,6 +78,8 @@ export default function Onboarding() {
               const parsed = selectedDate.toDateString();
               handleChange("birth", parsed);
               setDate(selectedDate);
+            } else {
+              console.error("No date selected");
             }
           }}
         />

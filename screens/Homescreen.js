@@ -55,6 +55,7 @@ export default function Homescreen() {
     return (
       <View style={styles.loader}>
         <ActivityIndicator size="large" color="#3498db" />
+        <Text>Loading profile...</Text>
       </View>
     );
   }
@@ -69,6 +70,8 @@ export default function Homescreen() {
       <FlatList
         data={coffeeData}
         keyExtractor={(item) => item.name}
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
         renderItem={({ item }) => (
           <CoffeeCard
             coffee={item}
@@ -186,18 +189,19 @@ const BottomModal = ({
   };
 
   const addPoints = async () => {
-    const currentPoints = +profile.points;
-    console.log("Current points:", currentPoints);
-    const newPoints = currentPoints + 20;
-    console.log("New points:", newPoints);
-    setProfile({ ...profile, points: newPoints });
-    await AsyncStorage.setItem(
-      "profile",
-      JSON.stringify({
-        ...profile,
-        points: newPoints,
-      })
-    );
+    try {
+      const currentPoints = +profile.points;
+      const newPoints = currentPoints + 20;
+
+      const updatedProfile = { ...profile, points: newPoints };
+
+      setProfile(updatedProfile);
+      await AsyncStorage.setItem("profile", JSON.stringify(updatedProfile));
+
+      console.log("New points:", newPoints);
+    } catch (error) {
+      console.error("Error adding points:", error);
+    }
   };
 
   return (
@@ -239,7 +243,11 @@ const BottomModal = ({
             </Text>
           </View>
           {/* Save Button */}
-          <TouchableOpacity style={styles.closeButton} onPress={handleSave}>
+          <TouchableOpacity
+            style={styles.closeButton}
+            onPress={handleSave}
+            accessibilityLabel="Log coffee"
+          >
             <Text style={styles.closeButtonText}>Log coffee</Text>
           </TouchableOpacity>
         </View>

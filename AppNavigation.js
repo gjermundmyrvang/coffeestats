@@ -64,9 +64,15 @@ const StackNavigator = () => {
 
   useEffect(() => {
     const checkOnboarding = async () => {
-      const onboarded = await AsyncStorage.getItem("onboarding");
-      setIsOnboarded(onboarded === "1");
-      setIsLoading(false);
+      try {
+        const onboarded = await AsyncStorage.getItem("onboarding");
+        setIsOnboarded(onboarded === "1");
+      } catch (error) {
+        console.error("Error loading onboarding status", error);
+        setIsOnboarded(false);
+      } finally {
+        setIsLoading(false);
+      }
     };
     checkOnboarding();
   }, []);
@@ -75,7 +81,7 @@ const StackNavigator = () => {
     return (
       <ActivityIndicator
         size="large"
-        style={{ flex: 1, justifyContent: "center" }}
+        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
       />
     );
   }

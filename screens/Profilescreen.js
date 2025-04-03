@@ -17,6 +17,7 @@ export default function Loggingscreen() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [level, setLevel] = useState(null);
+  const [error, setError] = useState(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -30,10 +31,11 @@ export default function Loggingscreen() {
       const parsedProfile = savedProfile ? JSON.parse(savedProfile) : null;
       setProfile(parsedProfile);
       setLoading(false);
-
       loadLevel(parsedProfile);
     } catch (error) {
-      console.error("Error loading profile (profilescreen):", error);
+      console.error("Error loading profile:", error);
+      setError("Failed to load profile.");
+      setLoading(false);
     }
   };
 
@@ -70,18 +72,19 @@ export default function Loggingscreen() {
     setLevel({ currentLevel, nextLevel, progress });
   };
 
-  const resetOnboarding = async () => {
-    await AsyncStorage.removeItem("onboarding");
-  };
-
-  const deleteHistory = async () => {
-    await AsyncStorage.removeItem("coffeeLogs");
-  };
+  if (error) {
+    return (
+      <View style={styles.loader}>
+        <Text style={{ color: "red" }}>{error}</Text>
+      </View>
+    );
+  }
 
   if (loading) {
     return (
       <View style={styles.loader}>
         <ActivityIndicator size="large" color="#3498db" />
+        <Text style={{ marginTop: 10 }}>Loading profile...</Text>
       </View>
     );
   }

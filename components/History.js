@@ -51,6 +51,7 @@ export default function History({ entries }) {
           keyExtractor={(item, index) => index.toString()}
           showsVerticalScrollIndicator={false}
           initialNumToRender={10}
+          maxToRenderPerBatch={10}
           renderItem={({ item }) =>
             filter === "all" ? (
               <CoffeeCard item={item} />
