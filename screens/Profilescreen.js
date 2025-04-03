@@ -6,7 +6,6 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native";
 import LevelCard from "../components/LevelCard";
@@ -98,15 +97,6 @@ export default function Loggingscreen() {
           <Text style={styles.info}>Weight: {profile?.weight || "N/A"} kg</Text>
         </View>
         <LevelCard level={level} points={profile.points} />
-        <TouchableOpacity style={styles.btn} onPress={resetOnboarding}>
-          <Text>Reset onboarding</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.btn, { backgroundColor: "red" }]}
-          onPress={deleteHistory}
-        >
-          <Text>Delete history</Text>
-        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -154,18 +144,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#555",
     marginBottom: 5,
-  },
-  btn: {
-    marginTop: 10,
-    backgroundColor: "orange",
-    padding: 20,
-    borderRadius: 12,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 3 },
-    shadowRadius: 5,
-    elevation: 4,
-    width: "100%",
-    maxWidth: 400,
   },
 });

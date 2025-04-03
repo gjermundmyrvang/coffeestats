@@ -1,4 +1,3 @@
-import { FontAwesome, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
   ScrollView,

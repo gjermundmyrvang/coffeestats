@@ -1,3 +1,4 @@
+import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useCallback, useEffect, useState } from "react";
@@ -11,14 +12,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import Animated, { Easing, SlideInRight } from "react-native-reanimated";
 import { coffeedata } from "../data/coffeedata";
-import { FontAwesome5, Ionicons } from "@expo/vector-icons";
-import Animated, {
-  Easing,
-  SlideInRight,
-  StretchInY,
-  StretchOutY,
-} from "react-native-reanimated";
 
 const coffeeData = coffeedata;
 

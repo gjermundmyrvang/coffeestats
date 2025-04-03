@@ -6,13 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import Animated, {
-  Easing,
-  LightSpeedInLeft,
-  LightSpeedInRight,
-  LightSpeedOutLeft,
-  LightSpeedOutRight,
-} from "react-native-reanimated";
+import Animated, { Easing, LightSpeedInLeft } from "react-native-reanimated";
 
 export default function History({ entries }) {
   const [filter, setFilter] = useState("all");
