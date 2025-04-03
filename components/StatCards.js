@@ -50,12 +50,12 @@ export const StatCards = ({ entries }) => {
       <View style={styles.card}>
         <View style={styles.row}>
           <View style={styles.cardColumn}>
-            <FontAwesome5 name="coffee" size={24} color="#6b4f4f" />
+            <FontAwesome5 name="coffee" size={24} color="#FF6868" />
             <Text style={styles.cardHeader}>Total Coffee's</Text>
             <Text style={styles.cardValue}>{totalCoffees} cups</Text>
           </View>
           <View style={styles.cardColumn}>
-            <Ionicons name="pulse-sharp" size={20} color={"#6b4f4f"} />
+            <Ionicons name="pulse-sharp" size={20} color={"#FF6868"} />
             <Text style={styles.cardHeader}>Total Caffeine</Text>
             <Text style={styles.cardValue}>{totalCaffeine} mg</Text>
           </View>
@@ -64,7 +64,7 @@ export const StatCards = ({ entries }) => {
 
       {/* First & Last Coffee Date Card */}
       <View style={styles.card}>
-        <Ionicons name="calendar-sharp" size={24} color="#6b4f4f" />
+        <Ionicons name="calendar-sharp" size={24} color="#FF6868" />
         <View style={styles.row}>
           <View style={styles.cardColumn}>
             <Text style={styles.cardHeader}>First Coffee</Text>
@@ -79,7 +79,7 @@ export const StatCards = ({ entries }) => {
 
       {/* Earliest & Latest Coffee Time Card */}
       <View style={styles.card}>
-        <Ionicons name="time-sharp" size={24} color="#6b4f4f" />
+        <Ionicons name="time-sharp" size={24} color="#FF6868" />
         <View style={styles.row}>
           <View style={styles.cardColumn}>
             <Text style={styles.cardHeader}>Earliest Coffee</Text>
@@ -94,21 +94,21 @@ export const StatCards = ({ entries }) => {
 
       {/* Most Active Hour Card */}
       <View style={styles.card}>
-        <Ionicons name="bar-chart-sharp" size={24} color="#6b4f4f" />
+        <Ionicons name="bar-chart-sharp" size={24} color="#FF6868" />
         <Text style={styles.cardHeader}>Most Active Hour</Text>
         <Text style={styles.cardValue}>{mostActiveHour}:00</Text>
       </View>
 
       {/* Highest Caffeine Provider Card */}
       <View style={styles.card}>
-        <Ionicons name="pie-chart-sharp" size={24} color="#6b4f4f" />
+        <Ionicons name="pie-chart-sharp" size={24} color="#FF6868" />
         <Text style={styles.cardHeader}>Highest Caffeine Provider</Text>
         <Text style={styles.cardValue}>{highestCaffeineCoffee}</Text>
       </View>
 
       {/* Coffees Per Type Card */}
       <View style={styles.card}>
-        <Ionicons name="list-sharp" size={24} color="#6b4f4f" />
+        <Ionicons name="list-sharp" size={24} color="#FF6868" />
         <Text style={styles.cardHeader}>Coffee's Per Type</Text>
         {Object.entries(coffeeTypes).map(([type, count]) => (
           <Text key={type} style={styles.cardValue}>

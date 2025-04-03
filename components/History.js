@@ -65,7 +65,7 @@ export default function History({ entries }) {
 }
 
 const CoffeeCard = ({ item }) => (
-  <View>
+  <View style={styles.card}>
     <Text style={styles.coffeeName}>{item.name}</Text>
     <Text style={styles.caffeine}>{item.sumMg} mg caffeine</Text>
     <Text style={styles.date}>
@@ -75,7 +75,7 @@ const CoffeeCard = ({ item }) => (
 );
 
 const GroupedCoffeeCard = ({ item }) => (
-  <View>
+  <View style={styles.card}>
     <Text style={styles.coffeeName}>
       {item.name} ({item.count}x)
     </Text>
