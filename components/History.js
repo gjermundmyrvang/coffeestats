@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import Animated, { Easing, LightSpeedInLeft } from "react-native-reanimated";
 
 export default function History({ entries }) {
   const [filter, setFilter] = useState("all");
@@ -56,13 +55,7 @@ export default function History({ entries }) {
             filter === "all" ? (
               <CoffeeCard item={item} />
             ) : (
-              <Animated.View
-                entering={LightSpeedInLeft.delay(200)
-                  .duration(500)
-                  .easing(Easing.ease)}
-              >
-                <GroupedCoffeeCard item={item} />
-              </Animated.View>
+              <GroupedCoffeeCard item={item} />
             )
           }
         />
@@ -72,30 +65,24 @@ export default function History({ entries }) {
 }
 
 const CoffeeCard = ({ item }) => (
-  <Animated.View
-    entering={LightSpeedInLeft.delay(200).duration(500).easing(Easing.ease)}
-    style={styles.card}
-  >
+  <View>
     <Text style={styles.coffeeName}>{item.name}</Text>
     <Text style={styles.caffeine}>{item.sumMg} mg caffeine</Text>
     <Text style={styles.date}>
       {item.date} at {item.time}
     </Text>
-  </Animated.View>
+  </View>
 );
 
 const GroupedCoffeeCard = ({ item }) => (
-  <Animated.View
-    entering={LightSpeedInLeft.delay(200).duration(500).easing(Easing.ease)}
-    style={styles.card}
-  >
+  <View>
     <Text style={styles.coffeeName}>
       {item.name} ({item.count}x)
     </Text>
     <Text style={styles.caffeine}>
       Total caffeine: {item.sumMg.toFixed(1)}mg
     </Text>
-  </Animated.View>
+  </View>
 );
 
 const styles = StyleSheet.create({

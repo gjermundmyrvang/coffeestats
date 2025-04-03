@@ -12,7 +12,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import Animated, { Easing, SlideInRight } from "react-native-reanimated";
 import { coffeedata } from "../data/coffeedata";
 
 const coffeeData = coffeedata;
@@ -71,16 +70,12 @@ export default function Homescreen() {
         data={coffeeData}
         keyExtractor={(item) => item.name}
         renderItem={({ item }) => (
-          <Animated.View
-            entering={SlideInRight.duration(500).easing(Easing.ease)}
-          >
-            <CoffeeCard
-              coffee={item}
-              setModalVisible={setModalVisible}
-              setSelectedCoffee={setSelectedCoffee}
-              setSelectedSize={setSelectedSize}
-            />
-          </Animated.View>
+          <CoffeeCard
+            coffee={item}
+            setModalVisible={setModalVisible}
+            setSelectedCoffee={setSelectedCoffee}
+            setSelectedSize={setSelectedSize}
+          />
         )}
       />
       <BottomModal
