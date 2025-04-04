@@ -24,13 +24,12 @@ export default function Loggingscreen() {
   const loadCoffeeLogs = async () => {
     try {
       const storedData = await AsyncStorage.getItem("coffeeLogs");
-      if (storedData) {
-        const parsed = JSON.parse(storedData).sort(
-          (a, b) => new Date(a.date) - new Date(b.date)
-        );
+      if (storedData !== undefined) {
+        const parsed = JSON.parse(storedData);
         setEntries(parsed);
       }
     } catch (error) {
+      setEntries([]);
       console.log("Failed retrieving coffee entries", error);
     }
   };

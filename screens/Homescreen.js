@@ -18,10 +18,10 @@ const coffeeData = coffeedata;
 
 export default function Homescreen() {
   const [loading, setLoading] = useState(true);
-  const [profile, setProfile] = useState();
+  const [profile, setProfile] = useState(null);
   const [greeting, setGreeting] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedCoffee, setSelectedCoffee] = useState(coffeeData[0]);
+  const [selectedCoffee, setSelectedCoffee] = useState(null);
   const [selectedSize, setSelectedSize] = useState(0);
 
   useFocusEffect(
@@ -67,28 +67,36 @@ export default function Homescreen() {
           {greeting} {profile ? profile.name.split(" ")[0] : "there"}! 👋
         </Text>
       </View>
-      <FlatList
-        data={coffeeData}
-        keyExtractor={(item) => item.name}
-        initialNumToRender={10}
-        maxToRenderPerBatch={10}
-        renderItem={({ item }) => (
-          <CoffeeCard
-            coffee={item}
-            setModalVisible={setModalVisible}
-            setSelectedCoffee={setSelectedCoffee}
-            setSelectedSize={setSelectedSize}
+      {coffeeData ? (
+        <>
+          <FlatList
+            data={coffeeData}
+            keyExtractor={(item) => item.name}
+            initialNumToRender={10}
+            maxToRenderPerBatch={10}
+            renderItem={({ item }) => (
+              <CoffeeCard
+                coffee={item}
+                setModalVisible={setModalVisible}
+                setSelectedCoffee={setSelectedCoffee}
+                setSelectedSize={setSelectedSize}
+              />
+            )}
           />
-        )}
-      />
-      <BottomModal
-        coffee={selectedCoffee}
-        size={selectedSize}
-        visible={modalVisible}
-        setVisible={setModalVisible}
-        profile={profile}
-        setProfile={setProfile}
-      />
+          {selectedCoffee && (
+            <BottomModal
+              coffee={selectedCoffee}
+              size={selectedSize}
+              visible={modalVisible}
+              setVisible={setModalVisible}
+              profile={profile}
+              setProfile={setProfile}
+            />
+          )}
+        </>
+      ) : (
+        <Text>No coffeedata availeable</Text>
+      )}
     </SafeAreaView>
   );
 }
@@ -174,7 +182,13 @@ const BottomModal = ({
       };
 
       const existingLogs = await AsyncStorage.getItem("coffeeLogs");
-      const logs = existingLogs ? JSON.parse(existingLogs) : [];
+      let logs = [];
+      try {
+        logs = existingLogs ? JSON.parse(existingLogs) : [];
+      } catch (e) {
+        console.error("Error parsing existingLogs:", e);
+        logs = [];
+      }
 
       logs.push(newEntry);
 
@@ -190,7 +204,7 @@ const BottomModal = ({
 
   const addPoints = async () => {
     try {
-      const currentPoints = +profile.points;
+      const currentPoints = Number(profile.points) || 0;
       const newPoints = currentPoints + 20;
 
       const updatedProfile = { ...profile, points: newPoints };

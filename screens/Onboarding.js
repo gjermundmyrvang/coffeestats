@@ -33,10 +33,12 @@ export default function Onboarding() {
     if (!isValidInput()) return;
     try {
       const savedProfile = JSON.stringify(profile);
-      await AsyncStorage.setItem("onboarding", "1");
-      await AsyncStorage.setItem("profile", savedProfile);
-      console.log("Profile submitted:", savedProfile);
-      navigation.navigate("StartPage");
+      if (savedProfile !== undefined) {
+        await AsyncStorage.setItem("onboarding", "1");
+        await AsyncStorage.setItem("profile", savedProfile);
+        console.log("Profile submitted:", savedProfile);
+        navigation.navigate("StartPage");
+      }
     } catch (error) {
       console.error("Error saving profile:", error);
       Alert.alert(
