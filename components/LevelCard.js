@@ -3,9 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 
 export default function LevelCard({ level, points }) {
   return (
-    <View
-      style={[styles.levelCard, { borderColor: `${level.currentLevel.color}` }]}
-    >
+    <View style={styles.levelCard}>
       <Text style={styles.levelTitle}>Coffee Rank</Text>
       <Text style={styles.levelText}>{level.currentLevel.name}</Text>
       <Text style={styles.scoreText}>
@@ -13,7 +11,12 @@ export default function LevelCard({ level, points }) {
       </Text>
 
       {/* Progress Bar */}
-      <View style={styles.progressBar}>
+      <View
+        style={[
+          styles.progressBar,
+          { borderColor: `${level.currentLevel.color}` },
+        ]}
+      >
         <View
           style={[
             styles.progressFill,
@@ -30,45 +33,49 @@ export default function LevelCard({ level, points }) {
 
 const styles = StyleSheet.create({
   levelCard: {
-    backgroundColor: "#fff",
-    padding: 15,
-    borderRadius: 12,
+    backgroundColor: "#1c1c1e",
+    padding: 20,
+    borderRadius: 20,
     shadowColor: "#000",
-    shadowOpacity: 0.15,
-    shadowOffset: { width: 0, height: 3 },
-    shadowRadius: 5,
-    elevation: 4,
-    marginTop: 15,
-    borderWidth: 2,
+    shadowOpacity: 0.3,
+    shadowOffset: { width: 0, height: 6 },
+    shadowRadius: 10,
+    elevation: 6,
+    marginTop: 20,
     width: "100%",
     maxWidth: 400,
+    position: "relative",
+    overflow: "hidden",
   },
   levelTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#333",
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#aaa",
+    letterSpacing: 1,
+    textTransform: "uppercase",
   },
   levelText: {
-    fontSize: 18,
-    fontWeight: "500",
-    color: "#444",
-    marginTop: 5,
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#fff",
+    marginTop: 8,
   },
   scoreText: {
     fontSize: 14,
-    color: "#777",
-    marginTop: 5,
+    color: "#bbb",
+    marginTop: 4,
   },
   progressBar: {
     width: "100%",
-    height: 8,
-    backgroundColor: "#eee",
-    borderRadius: 5,
-    marginTop: 10,
+    height: 12,
+    backgroundColor: "#333",
+    borderRadius: 10,
+    marginTop: 15,
+    borderWidth: 1,
     overflow: "hidden",
   },
   progressFill: {
     height: "100%",
-    borderRadius: 5,
+    borderRadius: 10,
   },
 });
