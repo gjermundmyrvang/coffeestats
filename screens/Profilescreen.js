@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   SafeAreaView,
@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import LevelCard from "../components/LevelCard";
 import { levelsdata } from "../data/levels";
-import { useOnFocus } from "../useOnFocus";
 
 const levels = levelsdata;
 
@@ -33,9 +32,9 @@ export default function Profilescreen() {
     }
   };
 
-  useOnFocus(() => {
+  useEffect(() => {
     loadProfile();
-  });
+  }, []);
 
   const loadLevel = (profile) => {
     let currentLevel = levels[0];

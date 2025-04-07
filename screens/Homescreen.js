@@ -13,7 +13,6 @@ import {
   View,
 } from "react-native";
 import { coffeedata } from "../data/coffeedata";
-import { useOnFocus } from "../useOnFocus";
 
 const coffeeData = coffeedata;
 
@@ -35,9 +34,9 @@ export default function Homescreen() {
     }
   };
 
-  useOnFocus(() => {
+  useEffect(() => {
     loadProfile();
-  });
+  }, []);
 
   useEffect(() => {
     const currentHour = new Date().getHours();
