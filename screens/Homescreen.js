@@ -1,7 +1,6 @@
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useFocusEffect } from "@react-navigation/native";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -24,11 +23,9 @@ export default function Homescreen() {
   const [selectedCoffee, setSelectedCoffee] = useState(null);
   const [selectedSize, setSelectedSize] = useState(0);
 
-  useFocusEffect(
-    useCallback(() => {
-      loadProfile();
-    }, [])
-  );
+  useEffect(() => {
+    loadProfile();
+  }, []);
 
   const loadProfile = async () => {
     try {

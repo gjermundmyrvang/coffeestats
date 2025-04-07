@@ -1,7 +1,6 @@
 import { FontAwesome5 } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import { Alert, Button, StyleSheet, Text, TextInput, View } from "react-native";
 
@@ -14,7 +13,6 @@ export default function Onboarding() {
     weight: "",
     points: "1",
   });
-  const navigation = useNavigation();
 
   const handleChange = (key, value) => {
     setProfile({ ...profile, [key]: value });
@@ -37,7 +35,6 @@ export default function Onboarding() {
         await AsyncStorage.setItem("onboarding", "1");
         await AsyncStorage.setItem("profile", savedProfile);
         console.log("Profile submitted:", savedProfile);
-        navigation.navigate("StartPage");
       }
     } catch (error) {
       console.error("Error saving profile:", error);

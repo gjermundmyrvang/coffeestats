@@ -1,6 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useFocusEffect } from "@react-navigation/native";
-import React, { useCallback, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   SafeAreaView,
@@ -19,11 +18,9 @@ export default function Loggingscreen() {
   const [level, setLevel] = useState(null);
   const [error, setError] = useState(null);
 
-  useFocusEffect(
-    useCallback(() => {
-      loadProfile();
-    }, [])
-  );
+  useEffect(() => {
+    loadProfile();
+  }, []);
 
   const loadProfile = async () => {
     try {
