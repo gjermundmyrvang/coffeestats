@@ -1,105 +1,94 @@
-import Ionicons from "@expo/vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator } from "react-native";
+import { Text, View } from "react-native";
+import Onboarding from "./screens/Onboarding";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Homescreen from "./screens/Homescreen";
 import Loggingscreen from "./screens/Loggingscreen";
-import Onboarding from "./screens/Onboarding";
 import Profilescreen from "./screens/Profilescreen";
+import { Ionicons } from "@expo/vector-icons";
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const TabNavigator = () => {
-  return (
-    <Tab.Navigator
-      initialRouteName="Home"
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, size, color }) => {
-          let iconName;
-          if (route.name === "Home") {
-            iconName = focused ? "home-sharp" : "home-outline";
-          } else if (route.name === "Log") {
-            iconName = focused ? "analytics" : "analytics-outline";
-          } else if (route.name === "Profile") {
-            iconName = focused
-              ? "person-circle-sharp"
-              : "person-circle-outline";
-          }
-          return <Ionicons name={iconName} size={size} color={color} />;
-        },
-        tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: "500",
-        },
-        tabBarActiveTintColor: "#1D1D1D",
-        tabBarInactiveTintColor: "#6C6C6C",
-      })}
-    >
-      <Tab.Screen
-        name="Home"
-        component={Homescreen}
-        options={{ headerShown: false }}
-      />
-      <Tab.Screen
-        name="Log"
-        component={Loggingscreen}
-        options={{ headerShown: false }}
-      />
-      <Tab.Screen
-        name="Profile"
-        component={Profilescreen}
-        options={{ headerShown: false }}
-      />
-    </Tab.Navigator>
-  );
-};
-
-const StackNavigator = () => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [isOnboarded, setIsOnboarded] = useState(false);
-
+export default function AppNavigation() {
+  const [isOnboarded, setisOnboarded] = useState(null);
   useEffect(() => {
-    const checkOnboarding = async () => {
-      try {
-        const onboarded = await AsyncStorage.getItem("onboarding");
-        setIsOnboarded(onboarded === "1");
-      } catch (error) {
-        console.error("Error loading onboarding status", error);
-        setIsOnboarded(false);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    checkOnboarding();
+    checkIfOnboarded();
   }, []);
 
-  if (isLoading) {
+  const checkIfOnboarded = async () => {
+    let onboarded = await AsyncStorage.getItem("onboarded");
+    onboarded == 1 ? setisOnboarded(true) : setisOnboarded(false);
+  };
+
+  const handleOnboarded = () => {
+    setisOnboarded(true);
+  };
+
+  if (isOnboarded == null) {
     return (
-      <ActivityIndicator
-        size="large"
-        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-      />
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text>
+          Something went wrong when starting the app. Try restarting the app.
+        </Text>
+      </View>
+    );
+  }
+  if (!isOnboarded) {
+    return (
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="onboarding">
+          <Stack.Screen name="onboarding" options={{ headerShown: false }}>
+            {(props) => <Onboarding {...props} onComplete={handleOnboarded} />}
+          </Stack.Screen>
+        </Stack.Navigator>
+      </NavigationContainer>
     );
   }
   return (
-    <Stack.Navigator
-      initialRouteName={isOnboarded ? "StartPage" : "Onboarding"}
-      screenOptions={{ headerShown: false }}
-    >
-      <Stack.Screen name="StartPage" component={TabNavigator} />
-      <Stack.Screen name="Onboarding" component={Onboarding} />
-    </Stack.Navigator>
-  );
-};
-
-export default function AppNavigation() {
-  return (
     <NavigationContainer>
-      <StackNavigator />
+      <Tab.Navigator
+        initialRouteName="home"
+        options={{ headerShown: false }}
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ color, size }) => {
+            let iconName;
+            if (route.name === "home") {
+              iconName = "home-sharp";
+            } else if (route.name === "logs") {
+              iconName = "stats-chart-sharp";
+            } else if (route.name === "profile") {
+              iconName = "person-sharp";
+            }
+            return <Ionicons name={iconName} size={size} color={color} />;
+          },
+          tabBarActiveTintColor: "#1d1d1d",
+          tabBarInactiveTintColor: "#cacaca",
+          tabBarStyle: {
+            backgroundColor: "#fafafa",
+            borderTopWidth: 1,
+          },
+        })}
+      >
+        <Tab.Screen
+          name="home"
+          options={{ headerShown: false }}
+          component={Homescreen}
+        />
+        <Tab.Screen
+          name="logs"
+          options={{ headerShown: false }}
+          component={Loggingscreen}
+        />
+        <Tab.Screen
+          name="profile"
+          options={{ headerShown: false }}
+          component={Profilescreen}
+        />
+      </Tab.Navigator>
     </NavigationContainer>
   );
 }

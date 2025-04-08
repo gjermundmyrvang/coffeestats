@@ -24,7 +24,7 @@ export default function Loggingscreen() {
   const loadCoffeeLogs = async () => {
     try {
       const storedData = await AsyncStorage.getItem("coffeeLogs");
-      if (storedData !== undefined) {
+      if (storedData) {
         const parsed = JSON.parse(storedData);
         setEntries(parsed);
       }
