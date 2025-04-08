@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useEffect, useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+import React, { useCallback, useState } from "react";
 import {
   SafeAreaView,
   StyleSheet,
@@ -14,9 +15,11 @@ export default function Loggingscreen() {
   const [entries, setEntries] = useState([]);
   const [view, setView] = useState("history");
 
-  useEffect(() => {
-    loadCoffeeLogs();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadCoffeeLogs();
+    }, [])
+  );
 
   const loadCoffeeLogs = async () => {
     try {
