@@ -12,7 +12,7 @@ import { levelsdata } from "../data/levels";
 
 const levels = levelsdata;
 
-export default function Loggingscreen() {
+export default function Profilescreen() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [level, setLevel] = useState(null);

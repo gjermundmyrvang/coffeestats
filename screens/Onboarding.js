@@ -4,7 +4,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import React, { useState } from "react";
 import { Alert, Button, StyleSheet, Text, TextInput, View } from "react-native";
 
-export default function Onboarding() {
+export default function Onboarding({ onComplete }) {
   const [date, setDate] = useState(new Date(1598051730000));
   const [profile, setProfile] = useState({
     name: "",
@@ -32,9 +32,10 @@ export default function Onboarding() {
     try {
       const savedProfile = JSON.stringify(profile);
       if (savedProfile !== undefined) {
-        await AsyncStorage.setItem("onboarding", "1");
+        await AsyncStorage.setItem("onboarded", "1");
         await AsyncStorage.setItem("profile", savedProfile);
         console.log("Profile submitted:", savedProfile);
+        onComplete();
       }
     } catch (error) {
       console.error("Error saving profile:", error);
