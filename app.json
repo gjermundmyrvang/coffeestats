@@ -2,6 +2,7 @@
   "expo": {
     "name": "Coffee Stats",
     "slug": "coffeestats",
+    "owner": "gjerry10",
     "version": "1.0.8",
     "orientation": "portrait",
     "icon": "./assets/coffeeicon.png",
@@ -27,7 +28,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "03cb6702-c8a0-4966-818e-6bb4d4062234"
+        "projectId": "bf196821-bb04-4c3c-9317-c196d930c006"
       }
     }
   }
