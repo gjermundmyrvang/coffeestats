@@ -1,6 +1,7 @@
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -12,6 +13,7 @@ import {
   View,
 } from "react-native";
 import { coffeedata } from "../data/coffeedata";
+import { useOnFocus } from "../useOnFocus";
 
 const coffeeData = coffeedata;
 
@@ -23,10 +25,6 @@ export default function Homescreen() {
   const [selectedCoffee, setSelectedCoffee] = useState(null);
   const [selectedSize, setSelectedSize] = useState(0);
 
-  useEffect(() => {
-    loadProfile();
-  }, []);
-
   const loadProfile = async () => {
     try {
       const savedProfile = await AsyncStorage.getItem("profile");
@@ -36,6 +34,10 @@ export default function Homescreen() {
       console.log("Error loading profile:", error);
     }
   };
+
+  useOnFocus(() => {
+    loadProfile();
+  });
 
   useEffect(() => {
     const currentHour = new Date().getHours();
