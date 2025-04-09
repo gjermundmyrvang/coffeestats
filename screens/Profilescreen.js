@@ -9,7 +9,9 @@ import {
 } from "react-native";
 import LevelCard from "../components/LevelCard";
 import { levelsdata } from "../data/levels";
+import { BuyMeCoffee } from "../components/BuyMeCoffee";
 
+// https://buymeacoffee.com/gjermundmyrvang
 const levels = levelsdata;
 
 export default function Profilescreen() {
@@ -17,10 +19,6 @@ export default function Profilescreen() {
   const [loading, setLoading] = useState(true);
   const [level, setLevel] = useState(null);
   const [error, setError] = useState(null);
-
-  useEffect(() => {
-    loadProfile();
-  }, []);
 
   const loadProfile = async () => {
     try {
@@ -35,6 +33,10 @@ export default function Profilescreen() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadProfile();
+  }, []);
 
   const loadLevel = (profile) => {
     let currentLevel = levels[0];
@@ -97,6 +99,7 @@ export default function Profilescreen() {
           <Text style={styles.info}>Weight: {profile?.weight || "N/A"} kg</Text>
         </View>
         <LevelCard level={level} points={profile.points} />
+        <BuyMeCoffee />
       </View>
     </SafeAreaView>
   );
