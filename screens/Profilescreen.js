@@ -9,7 +9,9 @@ import {
 } from "react-native";
 import LevelCard from "../components/LevelCard";
 import { levelsdata } from "../data/levels";
+import { BuyMeCoffee } from "../components/BuyMeCoffee";
 
+// https://buymeacoffee.com/gjermundmyrvang
 const levels = levelsdata;
 
 export default function Profilescreen() {
@@ -97,6 +99,7 @@ export default function Profilescreen() {
           <Text style={styles.info}>Weight: {profile?.weight || "N/A"} kg</Text>
         </View>
         <LevelCard level={level} points={profile.points} />
+        <BuyMeCoffee />
       </View>
     </SafeAreaView>
   );
