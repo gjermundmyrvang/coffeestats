@@ -13,8 +13,11 @@ import {
   View,
 } from "react-native";
 import { coffeedata } from "../data/coffeedata";
+import moment from "moment";
+import DailyMessage from "../components/DailyMessage";
 
 const coffeeData = coffeedata;
+const DAILY_MESSAGE_KEY = "lastMessageDate";
 
 export default function Homescreen() {
   const [loading, setLoading] = useState(true);
@@ -23,6 +26,7 @@ export default function Homescreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCoffee, setSelectedCoffee] = useState(null);
   const [selectedSize, setSelectedSize] = useState(0);
+  const [showDaily, setShowDaily] = useState(false);
 
   const loadProfile = async () => {
     try {
@@ -36,6 +40,7 @@ export default function Homescreen() {
 
   useEffect(() => {
     loadProfile();
+    checkDailyMessage();
   }, []);
 
   useEffect(() => {
@@ -48,6 +53,24 @@ export default function Homescreen() {
       setGreeting("Good evening");
     }
   }, []);
+
+  const checkDailyMessage = async () => {
+    try {
+      const today = moment().format("YYYY-MM-DD");
+      const lastShown = await AsyncStorage.getItem(DAILY_MESSAGE_KEY);
+
+      if (lastShown !== today) {
+        setShowDaily(true);
+        await AsyncStorage.setItem(DAILY_MESSAGE_KEY, today);
+      }
+    } catch (error) {
+      console.error("Error checking daily message:", error);
+    }
+  };
+
+  const handleRemoveMessage = () => {
+    setShowDaily(false);
+  };
 
   if (loading) {
     return (
@@ -65,6 +88,9 @@ export default function Homescreen() {
           {greeting} {profile ? profile.name.split(" ")[0] : "there"}! 👋
         </Text>
       </View>
+      {showDaily && (
+        <DailyMessage data={coffeeData} onClose={handleRemoveMessage} />
+      )}
       {coffeeData ? (
         <>
           <FlatList
