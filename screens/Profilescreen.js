@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useEffect, useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+import React, { useCallback, useState } from "react";
 import {
   ActivityIndicator,
   SafeAreaView,
@@ -7,11 +8,10 @@ import {
   Text,
   View,
 } from "react-native";
+import { BuyMeCoffee } from "../components/BuyMeCoffee";
 import LevelCard from "../components/LevelCard";
 import { levelsdata } from "../data/levels";
-import { BuyMeCoffee } from "../components/BuyMeCoffee";
 
-// https://buymeacoffee.com/gjermundmyrvang
 const levels = levelsdata;
 
 export default function Profilescreen() {
@@ -19,6 +19,12 @@ export default function Profilescreen() {
   const [loading, setLoading] = useState(true);
   const [level, setLevel] = useState(null);
   const [error, setError] = useState(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      loadProfile();
+    }, [])
+  );
 
   const loadProfile = async () => {
     try {
@@ -33,10 +39,6 @@ export default function Profilescreen() {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    loadProfile();
-  }, []);
 
   const loadLevel = (profile) => {
     let currentLevel = levels[0];
