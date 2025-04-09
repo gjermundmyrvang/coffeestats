@@ -3,6 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import React, { useState } from "react";
 import { Alert, Button, StyleSheet, Text, TextInput, View } from "react-native";
+import { STORAGEKEYS } from "../constants/AsyncKeys";
 
 export default function Onboarding({ onComplete }) {
   const [date, setDate] = useState(new Date(1598051730000));
@@ -32,8 +33,8 @@ export default function Onboarding({ onComplete }) {
     try {
       const savedProfile = JSON.stringify(profile);
       if (savedProfile !== undefined) {
-        await AsyncStorage.setItem("onboarded", "1");
-        await AsyncStorage.setItem("profile", savedProfile);
+        await AsyncStorage.setItem(STORAGEKEYS.ONBOARDING, "1");
+        await AsyncStorage.setItem(STORAGEKEYS.PROFILE, savedProfile);
         console.log("Profile submitted:", savedProfile);
         onComplete();
       }

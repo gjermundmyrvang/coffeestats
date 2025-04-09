@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import History from "../components/History";
 import Stats from "../components/Stats";
+import { STORAGEKEYS } from "../constants/AsyncKeys";
 
 export default function Loggingscreen() {
   const [entries, setEntries] = useState([]);
@@ -23,7 +24,7 @@ export default function Loggingscreen() {
 
   const loadCoffeeLogs = async () => {
     try {
-      const storedData = await AsyncStorage.getItem("coffeeLogs");
+      const storedData = await AsyncStorage.getItem(STORAGEKEYS.ENTRIES);
       if (storedData) {
         const parsed = JSON.parse(storedData);
         setEntries(parsed);

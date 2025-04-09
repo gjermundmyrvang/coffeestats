@@ -11,6 +11,7 @@ import {
 import { BuyMeCoffee } from "../components/BuyMeCoffee";
 import LevelCard from "../components/LevelCard";
 import { levelsdata } from "../data/levels";
+import { STORAGEKEYS } from "../constants/AsyncKeys";
 
 const levels = levelsdata;
 
@@ -28,7 +29,7 @@ export default function Profilescreen() {
 
   const loadProfile = async () => {
     try {
-      const savedProfile = await AsyncStorage.getItem("profile");
+      const savedProfile = await AsyncStorage.getItem(STORAGEKEYS.PROFILE);
       const parsedProfile = savedProfile ? JSON.parse(savedProfile) : null;
       setProfile(parsedProfile);
       setLoading(false);

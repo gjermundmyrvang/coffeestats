@@ -15,6 +15,7 @@ import {
 import { coffeedata } from "../data/coffeedata";
 import moment from "moment";
 import DailyMessage from "../components/DailyMessage";
+import { STORAGEKEYS } from "../constants/AsyncKeys";
 
 const coffeeData = coffeedata;
 const DAILY_MESSAGE_KEY = "lastMessageDate";
@@ -30,7 +31,7 @@ export default function Homescreen() {
 
   const loadProfile = async () => {
     try {
-      const savedProfile = await AsyncStorage.getItem("profile");
+      const savedProfile = await AsyncStorage.getItem(STORAGEKEYS.PROFILE);
       if (savedProfile) setProfile(JSON.parse(savedProfile));
       setLoading(false);
     } catch (error) {
@@ -57,11 +58,11 @@ export default function Homescreen() {
   const checkDailyMessage = async () => {
     try {
       const today = moment().format("YYYY-MM-DD");
-      const lastShown = await AsyncStorage.getItem(DAILY_MESSAGE_KEY);
+      const lastShown = await AsyncStorage.getItem(STORAGEKEYS.DAILYMESSAGE);
 
       if (lastShown !== today) {
         setShowDaily(true);
-        await AsyncStorage.setItem(DAILY_MESSAGE_KEY, today);
+        await AsyncStorage.setItem(STORAGEKEYS.DAILYMESSAGE, today);
       }
     } catch (error) {
       console.error("Error checking daily message:", error);
@@ -205,7 +206,7 @@ const BottomModal = ({
         time: date.toLocaleTimeString(),
       };
 
-      const existingLogs = await AsyncStorage.getItem("coffeeLogs");
+      const existingLogs = await AsyncStorage.getItem(STORAGEKEYS.ENTRIES);
       let logs = [];
       try {
         logs = existingLogs ? JSON.parse(existingLogs) : [];
@@ -216,7 +217,7 @@ const BottomModal = ({
 
       logs.push(newEntry);
 
-      await AsyncStorage.setItem("coffeeLogs", JSON.stringify(logs));
+      await AsyncStorage.setItem(STORAGEKEYS.ENTRIES, JSON.stringify(logs));
       await addPoints();
       console.log("Saved coffee:", newEntry);
       setVisible(!visible);
@@ -234,7 +235,10 @@ const BottomModal = ({
       const updatedProfile = { ...profile, points: newPoints };
 
       setProfile(updatedProfile);
-      await AsyncStorage.setItem("profile", JSON.stringify(updatedProfile));
+      await AsyncStorage.setItem(
+        STORAGEKEYS.PROFILE,
+        JSON.stringify(updatedProfile)
+      );
 
       console.log("New points:", newPoints);
     } catch (error) {
