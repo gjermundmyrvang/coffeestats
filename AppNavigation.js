@@ -9,9 +9,55 @@ import Homescreen from "./screens/Homescreen";
 import Loggingscreen from "./screens/Loggingscreen";
 import Profilescreen from "./screens/Profilescreen";
 import { Ionicons } from "@expo/vector-icons";
+import { STORAGEKEYS } from "./constants/AsyncKeys";
+import { Settingsscreen } from "./screens/Settingsscreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+
+const Tabs = () => {
+  return (
+    <Tab.Navigator
+      initialRouteName="home"
+      options={{ headerShown: false }}
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ color, size }) => {
+          let iconName;
+          if (route.name === "home") {
+            iconName = "home-sharp";
+          } else if (route.name === "logs") {
+            iconName = "stats-chart-sharp";
+          } else if (route.name === "profile") {
+            iconName = "person-sharp";
+          }
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: "#1d1d1d",
+        tabBarInactiveTintColor: "#cacaca",
+        tabBarStyle: {
+          backgroundColor: "#fafafa",
+          borderTopWidth: 1,
+        },
+      })}
+    >
+      <Tab.Screen
+        name="home"
+        options={{ headerShown: false }}
+        component={Homescreen}
+      />
+      <Tab.Screen
+        name="logs"
+        options={{ headerShown: false }}
+        component={Loggingscreen}
+      />
+      <Tab.Screen
+        name="profile"
+        options={{ headerShown: false }}
+        component={Profilescreen}
+      />
+    </Tab.Navigator>
+  );
+};
 
 export default function AppNavigation() {
   const [isOnboarded, setisOnboarded] = useState(null);
@@ -20,7 +66,7 @@ export default function AppNavigation() {
   }, []);
 
   const checkIfOnboarded = async () => {
-    let onboarded = await AsyncStorage.getItem("onboarded");
+    let onboarded = await AsyncStorage.getItem(STORAGEKEYS.ONBOARDING);
     onboarded == 1 ? setisOnboarded(true) : setisOnboarded(false);
   };
 
@@ -50,45 +96,18 @@ export default function AppNavigation() {
   }
   return (
     <NavigationContainer>
-      <Tab.Navigator
-        initialRouteName="home"
-        options={{ headerShown: false }}
-        screenOptions={({ route }) => ({
-          tabBarIcon: ({ color, size }) => {
-            let iconName;
-            if (route.name === "home") {
-              iconName = "home-sharp";
-            } else if (route.name === "logs") {
-              iconName = "stats-chart-sharp";
-            } else if (route.name === "profile") {
-              iconName = "person-sharp";
-            }
-            return <Ionicons name={iconName} size={size} color={color} />;
-          },
-          tabBarActiveTintColor: "#1d1d1d",
-          tabBarInactiveTintColor: "#cacaca",
-          tabBarStyle: {
-            backgroundColor: "#fafafa",
-            borderTopWidth: 1,
-          },
-        })}
-      >
-        <Tab.Screen
-          name="home"
+      <Stack.Navigator initialRouteName="main">
+        <Stack.Screen
+          name="main"
           options={{ headerShown: false }}
-          component={Homescreen}
+          component={Tabs}
         />
-        <Tab.Screen
-          name="logs"
+        <Stack.Screen
+          name="settings"
           options={{ headerShown: false }}
-          component={Loggingscreen}
+          component={Settingsscreen}
         />
-        <Tab.Screen
-          name="profile"
-          options={{ headerShown: false }}
-          component={Profilescreen}
-        />
-      </Tab.Navigator>
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }

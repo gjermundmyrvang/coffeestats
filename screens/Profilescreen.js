@@ -1,17 +1,19 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import React, { useCallback, useState } from "react";
 import {
   ActivityIndicator,
   SafeAreaView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 import { BuyMeCoffee } from "../components/BuyMeCoffee";
 import LevelCard from "../components/LevelCard";
 import { levelsdata } from "../data/levels";
 import { STORAGEKEYS } from "../constants/AsyncKeys";
+import { Ionicons } from "@expo/vector-icons";
 
 const levels = levelsdata;
 
@@ -20,6 +22,7 @@ export default function Profilescreen() {
   const [loading, setLoading] = useState(true);
   const [level, setLevel] = useState(null);
   const [error, setError] = useState(null);
+  const navigation = useNavigation();
 
   useFocusEffect(
     useCallback(() => {
@@ -74,6 +77,10 @@ export default function Profilescreen() {
     setLevel({ currentLevel, nextLevel, progress });
   };
 
+  const handleNavigate = () => {
+    navigation.navigate("settings");
+  };
+
   if (error) {
     return (
       <View style={styles.loader}>
@@ -103,10 +110,22 @@ export default function Profilescreen() {
         </View>
         <LevelCard level={level} points={profile.points} />
         <BuyMeCoffee />
+        <GButton onPress={handleNavigate} />
       </View>
     </SafeAreaView>
   );
 }
+
+const GButton = ({ onPress }) => {
+  return (
+    <TouchableOpacity style={styles.button} onPress={onPress}>
+      <View style={styles.content}>
+        <Ionicons name="cog-sharp" size={20} color="#fff" style={styles.icon} />
+        <Text style={styles.text}>Settings</Text>
+      </View>
+    </TouchableOpacity>
+  );
+};
 
 const styles = StyleSheet.create({
   safe: {
@@ -150,5 +169,33 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#555",
     marginBottom: 5,
+  },
+  button: {
+    width: "100%",
+    backgroundColor: "#e74c3c",
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 20,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  content: {
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  icon: {
+    marginRight: 10,
+  },
+  text: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
   },
 });
