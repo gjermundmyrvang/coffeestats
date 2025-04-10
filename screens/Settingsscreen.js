@@ -1,7 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
-import React from "react";
+import * as Updates from "expo-updates";
+import React, { useState } from "react";
 import {
   Alert,
   ScrollView,
@@ -10,19 +11,34 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import * as Updates from "expo-updates";
+import { GenericModal } from "../components/GenericModal";
+import Credits from "../components/settingscomponents/Credits";
+import EditProfile from "../components/settingscomponents/EditProfile";
+import { STORAGEKEYS } from "../constants/AsyncKeys";
 
 export const Settingsscreen = () => {
+  const [showModal, setshowModal] = useState(false);
+  const [child, setChild] = useState(null);
+
   const navigation = useNavigation();
 
   const handleNavigate = () => {
     navigation.goBack();
   };
 
-  const deleteAllData = async () => {
+  const closeModal = () => {
+    setshowModal(false);
+  };
+
+  const openModal = (component) => {
+    setChild(component);
+    setshowModal(true);
+  };
+
+  const deleteAllData = async (type = "all") => {
     Alert.alert(
       "Are you sure?",
-      "This will delete all saved data and restart the app.",
+      `This will delete ${type} data and restart the app.`,
       [
         {
           text: "Cancel",
@@ -33,7 +49,16 @@ export const Settingsscreen = () => {
           style: "destructive",
           onPress: async () => {
             try {
-              await AsyncStorage.clear();
+              switch (type) {
+                case "history":
+                  await AsyncStorage.removeItem(STORAGEKEYS.ENTRIES);
+                  break;
+                case "onboarding":
+                  await AsyncStorage.removeItem(STORAGEKEYS.ONBOARDING);
+                  break;
+                default:
+                  await AsyncStorage.clear();
+              }
               await Updates.reloadAsync();
             } catch (err) {
               console.error("Failed to clear data or restart app:", err);
@@ -53,24 +78,52 @@ export const Settingsscreen = () => {
       <Text style={styles.headertext}>Settings</Text>
 
       <ScrollView contentContainerStyle={styles.settingsList}>
-        <DeleteDataButton onPress={deleteAllData} />
+        <Text style={styles.h2}>General</Text>
+        <View style={styles.settingItems}>
+          <SettingsItem
+            icon={"person-outline"}
+            text={"Edit profile"}
+            onClick={() => openModal(<EditProfile />)}
+          />
+          <SettingsItem
+            icon={"shield-checkmark-outline"}
+            text={"Credits"}
+            onClick={() => openModal(<Credits />)}
+          />
+        </View>
+        <Text style={styles.h2}>Data</Text>
+        <View style={styles.settingItems}>
+          <SettingsItem
+            icon={"trash-outline"}
+            text={"Delete All Saved Data"}
+            onClick={() => deleteAllData("all")}
+          />
+          <SettingsItem
+            icon={"trash-bin-outline"}
+            text={"Delete Coffee History"}
+            onClick={() => deleteAllData("history")}
+          />
+          <SettingsItem
+            icon={"sync-outline"}
+            text={"Reset Onboarding"}
+            onClick={() => deleteAllData("onbaording")}
+          />
+        </View>
       </ScrollView>
+      {showModal && (
+        <GenericModal visible={showModal} onClose={closeModal}>
+          {child}
+        </GenericModal>
+      )}
     </View>
   );
 };
 
-const DeleteDataButton = ({ onPress }) => {
+const SettingsItem = ({ icon, text, onClick }) => {
   return (
-    <TouchableOpacity style={styles.button} onPress={onPress}>
-      <View style={styles.content}>
-        <Ionicons
-          name="trash-outline"
-          size={20}
-          color="#fff"
-          style={styles.icon}
-        />
-        <Text style={styles.text}>Delete All Saved Data</Text>
-      </View>
+    <TouchableOpacity style={styles.settingsItem} onPress={onClick}>
+      <Ionicons name={icon} size={22} color={"#1d1d1d"} />
+      <Text style={styles.settingText}>{text}</Text>
     </TouchableOpacity>
   );
 };
@@ -97,26 +150,35 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#1d1d1d",
   },
+  h2: {
+    fontSize: 22,
+    fontWeight: "700",
+    marginBottom: 5,
+    color: "#1d1d1d",
+  },
   settingsList: {
     paddingBottom: 40,
   },
-  settingItem: {
+  settingItems: {
+    marginVertical: 10,
     backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
+    width: "100%",
+    borderRadius: 16,
+  },
+  settingsItem: {
+    width: "100%",
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.05,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 8,
-    elevation: 3,
+    justifyContent: "flex-start",
+    padding: 16,
+    gap: 6,
+    borderBottomColor: "#fafafa",
+    borderBottomWidth: 2,
   },
   settingText: {
     fontSize: 16,
-    color: "#333",
+    color: "#1d1d1d",
+    fontWeight: "500",
   },
   button: {
     backgroundColor: "#e74c3c",
@@ -125,7 +187,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 20,
+    marginTop: 5,
     shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 4 },

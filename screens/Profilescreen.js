@@ -120,7 +120,12 @@ const GButton = ({ onPress }) => {
   return (
     <TouchableOpacity style={styles.button} onPress={onPress}>
       <View style={styles.content}>
-        <Ionicons name="cog-sharp" size={20} color="#fff" style={styles.icon} />
+        <Ionicons
+          name="cog-sharp"
+          size={20}
+          color="#1d1d1d"
+          style={styles.icon}
+        />
         <Text style={styles.text}>Settings</Text>
       </View>
     </TouchableOpacity>
@@ -130,7 +135,7 @@ const GButton = ({ onPress }) => {
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: "#f8f9fa",
+    backgroundColor: "#fafafa",
   },
   container: {
     alignItems: "center",
@@ -172,13 +177,13 @@ const styles = StyleSheet.create({
   },
   button: {
     width: "100%",
-    backgroundColor: "#e74c3c",
+    backgroundColor: "#fff",
     paddingVertical: 14,
     paddingHorizontal: 20,
     borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 20,
+    marginTop: 10,
     shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 4 },
@@ -194,7 +199,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   text: {
-    color: "#fff",
+    color: "#1d1d1d",
     fontSize: 16,
     fontWeight: "600",
   },

@@ -20,7 +20,7 @@ export const BuyMeCoffee = () => {
         onPress={handlePress}
         activeOpacity={0.8}
       >
-        <Text style={styles.text}>Buy Me a Coffee</Text>
+        <Text style={styles.text}>Buy Gjermund a Coffee;)</Text>
         <Ionicons name="cafe-sharp" size={22} color={"#1d1d1d"} />
       </TouchableOpacity>
     </View>
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     width: "100%",
     maxWidth: 400,
     alignItems: "center",
-    marginTop: 30,
+    marginTop: 20,
   },
   button: {
     width: "100%",
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFDD00",
     paddingVertical: 12,
     paddingHorizontal: 20,
-    borderRadius: 30,
+    borderRadius: 12,
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },

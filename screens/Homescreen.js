@@ -155,7 +155,6 @@ const CoffeeCard = ({
       </View>
 
       <View style={styles.sizesContainer}>
-        <FontAwesome5 name="coffee" size={24} color="#6b4f4f" />
         {coffee.sizes_ml.map((size) => (
           <TouchableOpacity
             key={size}
@@ -352,7 +351,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexWrap: "wrap",
     gap: 4,
-    marginBottom: 8,
+    marginBottom: 4,
   },
   sizeButton: {
     backgroundColor: "#f2f2f2",
@@ -368,7 +367,7 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   expandedContent: {
-    marginTop: 12,
+    marginTop: 8,
     borderTopWidth: 1,
     borderTopColor: "#eee",
     paddingTop: 12,
