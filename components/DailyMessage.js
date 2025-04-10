@@ -1,23 +1,31 @@
 import { Ionicons } from "@expo/vector-icons";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function DailyMessage({ data, onClose }) {
+  const [todaysCoffee, settodaysCoffe] = useState(null);
+
+  useEffect(() => {
+    settodaysCoffe(randomItem(data));
+  }, []);
+
   const randomItem = (items) => {
     return items[Math.floor(Math.random() * items.length)];
   };
 
-  const todaysCoffee = randomItem(data);
-
   return (
     <View style={styles.container}>
-      <View style={styles.messageContent}>
-        <Text style={styles.title}>☕ Today's Recommendation</Text>
-        <Text style={styles.subtitle}>{todaysCoffee.name}</Text>
-      </View>
-      <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-        <Ionicons name="close-circle" size={26} color="#444" />
-      </TouchableOpacity>
+      {todaysCoffee && (
+        <>
+          <View style={styles.messageContent}>
+            <Text style={styles.title}>☕ Today's Recommendation</Text>
+            <Text style={styles.subtitle}>{todaysCoffee.name}</Text>
+          </View>
+          <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+            <Ionicons name="close-circle" size={26} color="#444" />
+          </TouchableOpacity>
+        </>
+      )}
     </View>
   );
 }
