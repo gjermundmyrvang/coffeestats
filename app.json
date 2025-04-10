@@ -9,7 +9,7 @@
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/coffeeicon.png",
+      "image": "./assets/coffee_splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
