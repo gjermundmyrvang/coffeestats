@@ -1,7 +1,8 @@
-import { FontAwesome5, Ionicons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
 
+import moment from "moment";
 import {
   ActivityIndicator,
   FlatList,
@@ -12,10 +13,11 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { coffeedata } from "../data/coffeedata";
-import moment from "moment";
+import Animated, { FadeIn } from "react-native-reanimated";
 import DailyMessage from "../components/DailyMessage";
 import { STORAGEKEYS } from "../constants/AsyncKeys";
+import { coffeedata } from "../data/coffeedata";
+import { Snackbar } from "../components/Snackbar";
 
 const coffeeData = coffeedata;
 const DAILY_MESSAGE_KEY = "lastMessageDate";
@@ -28,6 +30,15 @@ export default function Homescreen() {
   const [selectedCoffee, setSelectedCoffee] = useState(null);
   const [selectedSize, setSelectedSize] = useState(0);
   const [showDaily, setShowDaily] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [showSnackbar, setShowSnackbar] = useState(false);
+
+  const triggerSnackbar = (message) => {
+    setSnackbarMessage(message);
+    setShowSnackbar(true);
+
+    setTimeout(() => setShowSnackbar(false), 2500);
+  };
 
   const loadProfile = async () => {
     try {
@@ -116,7 +127,11 @@ export default function Homescreen() {
               setVisible={setModalVisible}
               profile={profile}
               setProfile={setProfile}
+              trigger={triggerSnackbar}
             />
+          )}
+          {showSnackbar && (
+            <Snackbar message={snackbarMessage} visible={showSnackbar} />
           )}
         </>
       ) : (
@@ -167,12 +182,15 @@ const CoffeeCard = ({
       </View>
 
       {expanded && (
-        <View style={styles.expandedContent}>
+        <Animated.View
+          entering={FadeIn.delay(200).duration(500)}
+          style={styles.expandedContent}
+        >
           <Text style={styles.description}>{coffee.description}</Text>
           <Text style={styles.caffeine}>
             {coffee.caffeine_mg}mg caffeine per ml
           </Text>
-        </View>
+        </Animated.View>
       )}
     </TouchableOpacity>
   );
@@ -185,6 +203,7 @@ const BottomModal = ({
   setVisible,
   profile,
   setProfile,
+  trigger,
 }) => {
   const calculateCaffeine = (size) => {
     return (coffee.caffeine_mg * size).toFixed(1);
@@ -228,9 +247,25 @@ const BottomModal = ({
 
   const addPoints = async () => {
     try {
-      const currentPoints = Number(profile.points) || 0;
-      const newPoints = currentPoints + 20;
+      const getPointsForCoffee = (name, size) => {
+        const rules = {
+          Espresso: () => 40,
+          Americano: () => (size === 350 ? 40 : 20),
+          "Regular Filter Coffee": () => {
+            if (size === 350) return 30;
+            if (size > 350) return 40;
+            return 20;
+          },
+        };
 
+        const rule = rules[name];
+        return rule ? rule() : 20;
+      };
+
+      const points = getPointsForCoffee(coffee.name, size);
+
+      const currentPoints = Number(profile.points) || 0;
+      const newPoints = currentPoints + points;
       const updatedProfile = { ...profile, points: newPoints };
 
       setProfile(updatedProfile);
@@ -238,6 +273,7 @@ const BottomModal = ({
         STORAGEKEYS.PROFILE,
         JSON.stringify(updatedProfile)
       );
+      trigger(`+${points} points earned!`);
 
       console.log("New points:", newPoints);
     } catch (error) {

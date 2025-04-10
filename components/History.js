@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import Animated, { FadeInDown } from "react-native-reanimated";
 
 export default function History({ entries }) {
   const [filter, setFilter] = useState("all");
@@ -54,7 +55,9 @@ export default function History({ entries }) {
           maxToRenderPerBatch={10}
           renderItem={({ item }) =>
             filter === "all" ? (
-              <CoffeeCard item={item} />
+              <Animated.View entering={FadeInDown.delay(200).duration(400)}>
+                <CoffeeCard item={item} />
+              </Animated.View>
             ) : (
               <GroupedCoffeeCard item={item} />
             )
