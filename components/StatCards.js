@@ -1,6 +1,7 @@
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
+
 export const StatCards = ({ entries }) => {
   const totalCoffees = entries.length;
 
@@ -18,6 +19,14 @@ export const StatCards = ({ entries }) => {
   );
   const firstCoffeeDate = sortedByDate[0]?.date;
   const lastCoffeeDate = sortedByDate[sortedByDate.length - 1]?.date;
+
+  const coffeesToday = [...entries].filter(
+    (d) => d.date === new Date().toLocaleDateString()
+  );
+
+  const caffeineToday = coffeesToday
+    .reduce((sum, entry) => sum + parseFloat(entry.sumMg), 0)
+    .toFixed(1);
 
   const sortedByTime = [...entries].sort((a, b) =>
     a.time.localeCompare(b.time)
@@ -44,114 +53,127 @@ export const StatCards = ({ entries }) => {
     caffeineByType[a] > caffeineByType[b] ? a : b
   );
 
+  const ListItem = ({ icon, label, value }) => (
+    <View style={styles.item}>
+      <View style={styles.left}>
+        {icon}
+        <Text style={styles.label}>{label}</Text>
+      </View>
+      <Text style={styles.value}>{value}</Text>
+    </View>
+  );
+
   return (
-    <View>
-      {/* Total Coffees & Total Caffeine Card */}
-      <View style={styles.card}>
-        <View style={styles.row}>
-          <View style={styles.cardColumn}>
-            <FontAwesome5 name="coffee" size={24} color="#FF6868" />
-            <Text style={styles.cardHeader}>Total Coffee's</Text>
-            <Text style={styles.cardValue}>{totalCoffees} cups</Text>
-          </View>
-          <View style={styles.cardColumn}>
-            <Ionicons name="pulse-sharp" size={20} color={"#FF6868"} />
-            <Text style={styles.cardHeader}>Total Caffeine</Text>
-            <Text style={styles.cardValue}>{totalCaffeine} mg</Text>
-          </View>
+    <View style={styles.container}>
+      <ListItem
+        icon={<Ionicons name="bar-chart-outline" size={20} color="#FF6868" />}
+        label="Coffees Today"
+        value={`${coffeesToday.length} cups`}
+      />
+      <ListItem
+        icon={<Ionicons name="cafe-outline" size={20} color="#FF6868" />}
+        label="Caffeine Today"
+        value={`${caffeineToday} mg`}
+      />
+      <ListItem
+        icon={<FontAwesome5 name="coffee" size={18} color="#FF6868" />}
+        label="Total Coffees"
+        value={`${totalCoffees} cups`}
+      />
+      <ListItem
+        icon={<Ionicons name="pulse" size={20} color="#FF6868" />}
+        label="Total Caffeine"
+        value={`${totalCaffeine} mg`}
+      />
+      <ListItem
+        icon={<Ionicons name="calendar-outline" size={20} color="#FF6868" />}
+        label="First Coffee"
+        value={firstCoffeeDate}
+      />
+      <ListItem
+        icon={<Ionicons name="calendar-sharp" size={20} color="#FF6868" />}
+        label="Recent Coffee"
+        value={lastCoffeeDate}
+      />
+      <ListItem
+        icon={<Ionicons name="alarm-outline" size={20} color="#FF6868" />}
+        label="Earliest Coffee"
+        value={earliestCoffeeTime}
+      />
+      <ListItem
+        icon={<Ionicons name="alarm" size={20} color="#FF6868" />}
+        label="Latest Coffee"
+        value={latestCoffeeTime}
+      />
+      <ListItem
+        icon={<Ionicons name="bar-chart" size={20} color="#FF6868" />}
+        label="Most Active Hour"
+        value={`${mostActiveHour}:00`}
+      />
+      <ListItem
+        icon={<Ionicons name="flame" size={20} color="#FF6868" />}
+        label="Caffeine Provider"
+        value={highestCaffeineCoffee}
+      />
+
+      <View
+        style={[
+          styles.item,
+          {
+            flexDirection: "column",
+            alignItems: "flex-start",
+            borderBottomWidth: 0,
+          },
+        ]}
+      >
+        <View style={styles.left}>
+          <Ionicons name="list" size={20} color="#FF6868" />
+          <Text style={styles.label}>Coffee Types</Text>
         </View>
-      </View>
-
-      {/* First & Last Coffee Date Card */}
-      <View style={styles.card}>
-        <Ionicons name="calendar-sharp" size={24} color="#FF6868" />
-        <View style={styles.row}>
-          <View style={styles.cardColumn}>
-            <Text style={styles.cardHeader}>First Coffee</Text>
-            <Text style={styles.cardValue}>{firstCoffeeDate}</Text>
-          </View>
-          <View style={styles.cardColumn}>
-            <Text style={styles.cardHeader}>Recent Coffee</Text>
-            <Text style={styles.cardValue}>{lastCoffeeDate}</Text>
-          </View>
+        <View style={{ marginTop: 8, paddingLeft: 28 }}>
+          {Object.entries(coffeeTypes).map(([type, count]) => (
+            <Text key={type} style={styles.typeItem}>
+              • {type}: {count}
+            </Text>
+          ))}
         </View>
-      </View>
-
-      {/* Earliest & Latest Coffee Time Card */}
-      <View style={styles.card}>
-        <Ionicons name="time-sharp" size={24} color="#FF6868" />
-        <View style={styles.row}>
-          <View style={styles.cardColumn}>
-            <Text style={styles.cardHeader}>Earliest Coffee</Text>
-            <Text style={styles.cardValue}>{earliestCoffeeTime}</Text>
-          </View>
-          <View style={styles.cardColumn}>
-            <Text style={styles.cardHeader}>Latest Coffee</Text>
-            <Text style={styles.cardValue}>{latestCoffeeTime}</Text>
-          </View>
-        </View>
-      </View>
-
-      {/* Most Active Hour Card */}
-      <View style={styles.card}>
-        <Ionicons name="bar-chart-sharp" size={24} color="#FF6868" />
-        <Text style={styles.cardHeader}>Most Active Hour</Text>
-        <Text style={styles.cardValue}>{mostActiveHour}:00</Text>
-      </View>
-
-      {/* Highest Caffeine Provider Card */}
-      <View style={styles.card}>
-        <Ionicons name="pie-chart-sharp" size={24} color="#FF6868" />
-        <Text style={styles.cardHeader}>Highest Caffeine Provider</Text>
-        <Text style={styles.cardValue}>{highestCaffeineCoffee}</Text>
-      </View>
-
-      {/* Coffees Per Type Card */}
-      <View style={styles.card}>
-        <Ionicons name="list-sharp" size={24} color="#FF6868" />
-        <Text style={styles.cardHeader}>Coffee's Per Type</Text>
-        {Object.entries(coffeeTypes).map(([type, count]) => (
-          <Text key={type} style={styles.cardValue}>
-            {type}: {count}
-          </Text>
-        ))}
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  card: {
-    backgroundColor: "#fafafa",
-    padding: 20,
-    marginBottom: 15,
-    borderRadius: 16,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 4 },
-    shadowRadius: 6,
-    elevation: 4,
-    borderWidth: 1,
-    borderColor: "#e0e0e0",
+  container: {
+    backgroundColor: "#1d1d1d",
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
   },
-  row: {
+  item: {
     flexDirection: "row",
     justifyContent: "space-between",
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderColor: "#2e2e2e",
+  },
+  left: {
+    flexDirection: "row",
     alignItems: "center",
+    gap: 10,
   },
-  cardColumn: {
-    flex: 1,
-    marginRight: 10,
+  label: {
+    fontSize: 15,
+    color: "#fafafa",
+    fontWeight: "500",
   },
-  cardHeader: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: 5,
+  value: {
+    fontSize: 15,
+    fontWeight: "600",
+    color: "#fafafa",
   },
-  cardValue: {
-    fontSize: 18,
-    color: "#333",
-    marginBottom: 5,
+  typeItem: {
+    fontSize: 14,
+    color: "#fafafa",
+    paddingVertical: 2,
   },
 });
