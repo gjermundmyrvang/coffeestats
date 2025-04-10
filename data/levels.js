@@ -9,4 +9,5 @@ export const levelsdata = [
   { name: "Titanium Connoisseur", minScore: 2800, color: "#878787" },
   { name: "Executive Cupping Expert", minScore: 3600, color: "#3e2723" },
   { name: "The Coffee Magnate", minScore: 4500, color: "#2d1b14" },
+  { name: "The Coffee Boss", minScore: 5700, color: "#000000" },
 ];
