@@ -20,7 +20,7 @@ export const BuyMeCoffee = () => {
         onPress={handlePress}
         activeOpacity={0.8}
       >
-        <Text style={styles.text}>Buy Gjermund a Coffee;)</Text>
+        <Text style={styles.text}>Buy Me a Coffee;)</Text>
         <Ionicons name="cafe-sharp" size={22} color={"#1d1d1d"} />
       </TouchableOpacity>
     </View>
