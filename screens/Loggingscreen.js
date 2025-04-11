@@ -85,10 +85,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginHorizontal: 5,
     borderRadius: 20,
-    backgroundColor: "#E0E0E0",
+    backgroundColor: "#ADADAD",
   },
   activeButton: {
-    backgroundColor: "#B0B0B0",
+    backgroundColor: "#FFBA6C",
   },
   buttonText: {
     fontSize: 16,

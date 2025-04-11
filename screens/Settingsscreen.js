@@ -70,6 +70,20 @@ export const Settingsscreen = () => {
     );
   };
 
+  const profileUpdated = () => {
+    Alert.alert(
+      "Profile updated.",
+      "",
+      [
+        {
+          text: "OK",
+          onPress: () => closeModal(),
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.backButton} onPress={handleNavigate}>
@@ -83,7 +97,9 @@ export const Settingsscreen = () => {
           <SettingsItem
             icon={"person-outline"}
             text={"Edit profile"}
-            onClick={() => openModal(<EditProfile />)}
+            onClick={() =>
+              openModal(<EditProfile onComplete={profileUpdated} />)
+            }
           />
           <SettingsItem
             icon={"shield-checkmark-outline"}

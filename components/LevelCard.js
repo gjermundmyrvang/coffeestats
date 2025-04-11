@@ -2,6 +2,11 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 export default function LevelCard({ level, points }) {
+  if (!level) {
+    <View style={styles.levelCard}>
+      <Text style={styles.levelTitle}>Failed getting level</Text>
+    </View>;
+  }
   return (
     <View style={styles.levelCard}>
       <Text style={styles.levelTitle}>Coffee Rank</Text>

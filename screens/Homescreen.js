@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import moment from "moment";
 import {
@@ -18,13 +18,12 @@ import DailyMessage from "../components/DailyMessage";
 import { STORAGEKEYS } from "../constants/AsyncKeys";
 import { coffeedata } from "../data/coffeedata";
 import { Snackbar } from "../components/Snackbar";
+import { ProfileContext } from "../context/ProfileContext";
 
 const coffeeData = coffeedata;
 const DAILY_MESSAGE_KEY = "lastMessageDate";
 
 export default function Homescreen() {
-  const [loading, setLoading] = useState(true);
-  const [profile, setProfile] = useState(null);
   const [greeting, setGreeting] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCoffee, setSelectedCoffee] = useState(null);
@@ -32,6 +31,8 @@ export default function Homescreen() {
   const [showDaily, setShowDaily] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [showSnackbar, setShowSnackbar] = useState(false);
+  const { profile, setProfile, loading, reloadProfile } =
+    useContext(ProfileContext);
 
   const triggerSnackbar = (message) => {
     setSnackbarMessage(message);
@@ -40,18 +41,7 @@ export default function Homescreen() {
     setTimeout(() => setShowSnackbar(false), 2500);
   };
 
-  const loadProfile = async () => {
-    try {
-      const savedProfile = await AsyncStorage.getItem(STORAGEKEYS.PROFILE);
-      if (savedProfile) setProfile(JSON.parse(savedProfile));
-      setLoading(false);
-    } catch (error) {
-      console.log("Error loading profile:", error);
-    }
-  };
-
   useEffect(() => {
-    loadProfile();
     checkDailyMessage();
   }, []);
 

@@ -1,63 +1,37 @@
+import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { useEffect, useState, useContext } from "react";
 import {
   ActivityIndicator,
   Alert,
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity,
   View,
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { STORAGEKEYS } from "../../constants/AsyncKeys";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import MyButton from "../MyButton";
+import { ProfileContext } from "../../context/ProfileContext";
 
-export default function EditProfile() {
-  const [loading, setLoading] = useState(true);
-  const [date, setDate] = useState(new Date(1598051730000));
-  const [profile, setProfile] = useState({
-    name: "",
-    birth: "",
-    height: "",
-    weight: "",
-  });
+export default function EditProfile({ onComplete }) {
+  const { profile, setProfile, loading } = useContext(ProfileContext);
 
-  useEffect(() => {
-    loadProfile();
-  }, []);
-  const loadProfile = async () => {
-    try {
-      const savedProfile = await AsyncStorage.getItem(STORAGEKEYS.PROFILE);
-      if (savedProfile) setProfile(JSON.parse(savedProfile));
-      setLoading(false);
-    } catch (error) {
-      console.log("Error loading profile:", error);
-    }
-  };
-  const handleChange = (key, value) => {
-    setProfile({ ...profile, [key]: value });
-  };
   const isValidInput = () => {
-    const { name, birth, height, weight } = profile;
-    if (!name.trim() || !birth || !height.trim() || !weight.trim()) {
+    const { name, favCoffee, favTreat } = profile;
+    if (!name.trim() || !favCoffee || !favTreat.trim()) {
       Alert.alert("Fill out every field!");
       return false;
     }
     return true;
   };
 
-  const onComplete = () => {
-    Alert.alert(
-      "Profile updated. Note that name will not change in homescreen until you restart the app."
-    );
-  };
   const handleSubmit = async () => {
     if (!isValidInput()) return;
     try {
       const savedProfile = JSON.stringify(profile);
       if (savedProfile) {
         await AsyncStorage.setItem(STORAGEKEYS.PROFILE, savedProfile);
-        console.log("Profile submitted:", savedProfile);
+        console.log("Profile changed:", savedProfile);
         onComplete();
       }
     } catch (error) {
@@ -68,6 +42,10 @@ export default function EditProfile() {
     }
   };
 
+  const handleChange = (key, value) => {
+    setProfile({ ...profile, [key]: value });
+  };
+
   if (loading) {
     return (
       <View style={styles.loader}>
@@ -76,50 +54,56 @@ export default function EditProfile() {
       </View>
     );
   }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Edit Profile</Text>
-
-      <TextInput
-        placeholder="Name"
-        value={profile.name}
-        clearButtonMode="while-editing"
-        onChangeText={(text) => handleChange("name", text)}
-        style={styles.input}
-      />
-      <DateTimePicker
-        value={date}
-        mode="date"
-        display="default"
-        style={styles.dateInput}
-        onChange={(event, selectedDate) => {
-          if (selectedDate) {
-            const parsed = selectedDate.toDateString();
-            handleChange("birth", parsed);
-            setDate(selectedDate);
-          } else {
-            console.error("No date selected");
-          }
-        }}
-      />
-      <TextInput
-        placeholder="Height (cm)"
-        value={profile.height}
-        keyboardType="numeric"
-        onChangeText={(text) => handleChange("height", text)}
-        style={styles.input}
-      />
-      <TextInput
-        placeholder="Weight (kg)"
-        value={profile.weight}
-        keyboardType="numeric"
-        onChangeText={(text) => handleChange("weight", text)}
-        style={styles.input}
-      />
-
-      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>Save Profile</Text>
-      </TouchableOpacity>
+      <View style={styles.inputContainer}>
+        <Ionicons
+          name="person-add-sharp"
+          size={20}
+          color="gray"
+          style={styles.icon}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Enter your name"
+          value={profile.name}
+          clearButtonMode="while-editing"
+          onChangeText={(text) => handleChange("name", text)}
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <Ionicons
+          name="cafe-sharp"
+          size={20}
+          color="gray"
+          style={styles.icon}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Favorite coffee"
+          value={profile.favCoffee}
+          clearButtonMode="while-editing"
+          onChangeText={(text) => handleChange("favCoffee", text)}
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <Ionicons
+          name="ice-cream-sharp"
+          size={20}
+          color="gray"
+          style={styles.icon}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Favorite coffee treat"
+          value={profile.favTreat}
+          clearButtonMode="while-editing"
+          onChangeText={(text) => handleChange("favTreat", text)}
+        />
+      </View>
+      <MyButton onPress={handleSubmit} icon={"bookmark-sharp"} text={"Save"} />
     </View>
   );
 }
@@ -137,24 +121,23 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#1d1d1d",
   },
-  input: {
-    backgroundColor: "#f2f2f2",
-    borderRadius: 10,
-    padding: 12,
-    fontSize: 16,
-    marginBottom: 12,
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
   },
-  button: {
-    backgroundColor: "#1d1d1d",
-    padding: 14,
-    borderRadius: 10,
-    marginTop: 10,
-  },
-  buttonText: {
-    color: "#fff",
-    fontWeight: "600",
+  icon: {
+    width: 25,
     textAlign: "center",
-    fontSize: 16,
+    marginRight: 10,
+  },
+  input: {
+    flex: 1,
   },
   loader: {
     flex: 1,

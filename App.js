@@ -1,5 +1,10 @@
 import AppNavigation from "./AppNavigation";
+import { ProfileProvider } from "./context/ProfileContext";
 
 export default function App() {
-  return <AppNavigation />;
+  return (
+    <ProfileProvider>
+      <AppNavigation />
+    </ProfileProvider>
+  );
 }

@@ -1,6 +1,6 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useContext, useState } from "react";
 import {
   ActivityIndicator,
   SafeAreaView,
@@ -11,53 +11,29 @@ import {
 } from "react-native";
 import { BuyMeCoffee } from "../components/BuyMeCoffee";
 import LevelCard from "../components/LevelCard";
+import { ProfileContext } from "../context/ProfileContext";
 import { levelsdata } from "../data/levels";
-import { STORAGEKEYS } from "../constants/AsyncKeys";
-import { Ionicons } from "@expo/vector-icons";
 
 const levels = levelsdata;
 
 export default function Profilescreen() {
-  const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { profile, loading } = useContext(ProfileContext);
   const [level, setLevel] = useState(null);
-  const [error, setError] = useState(null);
   const navigation = useNavigation();
 
   useFocusEffect(
     useCallback(() => {
-      loadProfile();
-    }, [])
+      if (profile) {
+        loadLevel(profile);
+      }
+    }, [profile])
   );
-
-  const loadProfile = async () => {
-    try {
-      const savedProfile = await AsyncStorage.getItem(STORAGEKEYS.PROFILE);
-      const parsedProfile = savedProfile ? JSON.parse(savedProfile) : null;
-      setProfile(parsedProfile);
-      setLoading(false);
-      loadLevel(parsedProfile);
-    } catch (error) {
-      console.error("Error loading profile:", error);
-      setError("Failed to load profile.");
-      setLoading(false);
-    }
-  };
 
   const loadLevel = (profile) => {
     let currentLevel = levels[0];
     let nextLevel = levels[1];
 
-    if (!profile) {
-      setLevel({
-        currentLevel,
-        nextLevel,
-        progress: 1,
-      });
-      return;
-    }
-
-    const score = Number(profile.points) || 0;
+    const score = Number(profile?.points) || 0;
     console.log("Score:", score);
 
     for (let i = levels.length - 1; i >= 0; i--) {
@@ -81,15 +57,7 @@ export default function Profilescreen() {
     navigation.navigate("settings");
   };
 
-  if (error) {
-    return (
-      <View style={styles.loader}>
-        <Text style={{ color: "red" }}>{error}</Text>
-      </View>
-    );
-  }
-
-  if (loading) {
+  if (loading || !profile || !level) {
     return (
       <View style={styles.loader}>
         <ActivityIndicator size="large" color="#3498db" />
@@ -104,9 +72,12 @@ export default function Profilescreen() {
         <Text style={styles.title}>Profile</Text>
         <View style={styles.card}>
           <Text style={styles.name}>{profile?.name || "Unknown"}</Text>
-          <Text style={styles.info}>Birth: {profile?.birth || "N/A"}</Text>
-          <Text style={styles.info}>Height: {profile?.height || "N/A"} cm</Text>
-          <Text style={styles.info}>Weight: {profile?.weight || "N/A"} kg</Text>
+          <Text style={styles.info}>
+            Favorite coffee: {profile?.favCoffee || "edit in settings"}
+          </Text>
+          <Text style={styles.info}>
+            Favorite treat: {profile?.favTreat || "edit in settings"}
+          </Text>
         </View>
         <LevelCard level={level} points={profile.points} />
         <BuyMeCoffee />

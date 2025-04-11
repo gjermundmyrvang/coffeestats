@@ -3,4 +3,5 @@ export const STORAGEKEYS = {
   PROFILE: "profile",
   ENTRIES: "coffeeLogs",
   DAILYMESSAGE: "lastMessageDate",
+  PROFILECHANGED: "profilechanged",
 };

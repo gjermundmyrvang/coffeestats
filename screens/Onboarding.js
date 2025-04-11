@@ -1,27 +1,27 @@
-import { FontAwesome5 } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import React, { useState } from "react";
-import { Alert, Button, StyleSheet, Text, TextInput, View } from "react-native";
+import React, { useContext, useState } from "react";
+import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
+import MyButton from "../components/MyButton";
 import { STORAGEKEYS } from "../constants/AsyncKeys";
+import { ProfileContext } from "../context/ProfileContext";
 
 export default function Onboarding({ onComplete }) {
-  const [date, setDate] = useState(new Date(1598051730000));
-  const [profile, setProfile] = useState({
+  const { setProfile } = useContext(ProfileContext);
+  const [localProfile, setLocalProfile] = useState({
     name: "",
-    birth: "",
-    height: "",
-    weight: "",
     points: "1",
+    favCoffee: "",
+    favTreat: "",
   });
 
   const handleChange = (key, value) => {
-    setProfile({ ...profile, [key]: value });
+    setLocalProfile({ ...localProfile, [key]: value });
   };
 
   const isValidInput = () => {
-    const { name, birth, height, weight } = profile;
-    if (!name.trim() || !birth || !height.trim() || !weight.trim()) {
+    const { name, favCoffee, favTreat } = localProfile;
+    if (!name.trim() || !favCoffee || !favTreat.trim()) {
       Alert.alert("Fill out every field!");
       return false;
     }
@@ -31,13 +31,14 @@ export default function Onboarding({ onComplete }) {
   const handleSubmit = async () => {
     if (!isValidInput()) return;
     try {
-      const savedProfile = JSON.stringify(profile);
-      if (savedProfile !== undefined) {
-        await AsyncStorage.setItem(STORAGEKEYS.ONBOARDING, "1");
-        await AsyncStorage.setItem(STORAGEKEYS.PROFILE, savedProfile);
-        console.log("Profile submitted:", savedProfile);
-        onComplete();
-      }
+      await AsyncStorage.setItem(STORAGEKEYS.ONBOARDING, "1");
+      await AsyncStorage.setItem(
+        STORAGEKEYS.PROFILE,
+        JSON.stringify(localProfile)
+      );
+      setProfile(localProfile); // updates global context
+      console.log("Profile submitted:", localProfile);
+      onComplete();
     } catch (error) {
       console.error("Error saving profile:", error);
       Alert.alert(
@@ -50,71 +51,51 @@ export default function Onboarding({ onComplete }) {
     <View style={styles.container}>
       <Text style={styles.title}>Welcome to Coffee Stats</Text>
       <View style={styles.inputContainer}>
-        <FontAwesome5 name="user" size={20} color="gray" style={styles.icon} />
+        <Ionicons
+          name="person-add-sharp"
+          size={20}
+          color="gray"
+          style={styles.icon}
+        />
         <TextInput
           style={styles.input}
           placeholder="Enter your name"
-          value={profile.name}
+          value={localProfile.name}
           clearButtonMode="while-editing"
           onChangeText={(text) => handleChange("name", text)}
         />
       </View>
       <View style={styles.inputContainer}>
-        <FontAwesome5
-          name="calendar"
-          size={20}
-          color="gray"
-          style={styles.icon}
-        />
-        <Text style={[styles.input && { color: "gray" }]}>
-          {profile.birth == "" ? "Enter your birthdate" : profile.birth}
-        </Text>
-        <DateTimePicker
-          value={date}
-          style={styles.input}
-          mode="date"
-          display="default"
-          onChange={(event, selectedDate) => {
-            if (selectedDate) {
-              const parsed = selectedDate.toDateString();
-              handleChange("birth", parsed);
-              setDate(selectedDate);
-            } else {
-              console.error("No date selected");
-            }
-          }}
-        />
-      </View>
-      <View style={styles.inputContainer}>
-        <FontAwesome5 name="ruler" size={20} color="gray" style={styles.icon} />
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your height (cm)"
-          keyboardType="numeric"
-          returnKeyType="done"
-          clearButtonMode="while-editing"
-          value={profile.height}
-          onChangeText={(text) => handleChange("height", text)}
-        />
-      </View>
-      <View style={styles.inputContainer}>
-        <FontAwesome5
-          name="weight"
+        <Ionicons
+          name="cafe-sharp"
           size={20}
           color="gray"
           style={styles.icon}
         />
         <TextInput
           style={styles.input}
-          placeholder="Enter your weight (kg)"
-          keyboardType="numeric"
-          returnKeyType="done"
+          placeholder="Favorite coffee"
+          value={localProfile.favCoffee}
           clearButtonMode="while-editing"
-          value={profile.weight}
-          onChangeText={(text) => handleChange("weight", text)}
+          onChangeText={(text) => handleChange("favCoffee", text)}
         />
       </View>
-      <Button title="Save" onPress={handleSubmit} />
+      <View style={styles.inputContainer}>
+        <Ionicons
+          name="ice-cream-sharp"
+          size={20}
+          color="gray"
+          style={styles.icon}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Favorite coffee treat"
+          value={localProfile.favTreat}
+          clearButtonMode="while-editing"
+          onChangeText={(text) => handleChange("favTreat", text)}
+        />
+      </View>
+      <MyButton onPress={handleSubmit} icon={"bookmark-sharp"} text={"Save"} />
     </View>
   );
 }
