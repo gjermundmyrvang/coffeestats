@@ -1,5 +1,7 @@
+import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
+  Alert,
   FlatList,
   StyleSheet,
   Text,
@@ -8,7 +10,7 @@ import {
 } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 
-export default function History({ entries }) {
+export default function History({ entries, onDelete }) {
   const [filter, setFilter] = useState("all");
 
   const groupedEntries = entries.reduce((acc, entry) => {
@@ -22,6 +24,25 @@ export default function History({ entries }) {
   }, {});
 
   const groupedData = Object.values(groupedEntries);
+
+  const handleDelete = (id) => {
+    Alert.alert(
+      "Are you sure?",
+      `This will delete the entry and cannot be undone`,
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => onDelete(id),
+        },
+      ],
+      { cancelable: true }
+    );
+  };
   return (
     <View style={styles.container}>
       {/* Filter Buttons */}
@@ -53,10 +74,13 @@ export default function History({ entries }) {
           showsVerticalScrollIndicator={false}
           initialNumToRender={10}
           maxToRenderPerBatch={10}
-          renderItem={({ item }) =>
+          renderItem={({ item, index }) =>
             filter === "all" ? (
-              <Animated.View entering={FadeInDown.delay(200).duration(400)}>
-                <CoffeeCard item={item} />
+              <Animated.View
+                entering={FadeInDown.delay(200).duration(400)}
+                exiting={FadeInDown.delay(400).duration(500)}
+              >
+                <CoffeeCard item={item} onclick={() => handleDelete(index)} />
               </Animated.View>
             ) : (
               <GroupedCoffeeCard item={item} />
@@ -68,13 +92,16 @@ export default function History({ entries }) {
   );
 }
 
-const CoffeeCard = ({ item }) => (
+const CoffeeCard = ({ item, onclick }) => (
   <View style={styles.card}>
     <Text style={styles.coffeeName}>{item.name}</Text>
     <Text style={styles.caffeine}>{item.sumMg} mg caffeine</Text>
     <Text style={styles.date}>
       {item.date} at {item.time}
     </Text>
+    <TouchableOpacity style={styles.deleteButton} onPress={onclick}>
+      <Ionicons name="trash-sharp" size={16} color={"#fff"} />
+    </TouchableOpacity>
   </View>
 );
 
@@ -131,6 +158,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
     elevation: 3,
+    position: "relative",
   },
   coffeeName: {
     fontSize: 18,
@@ -143,5 +171,21 @@ const styles = StyleSheet.create({
   date: {
     fontSize: 12,
     color: "#888",
+  },
+  deleteButton: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: "#ff4d4d",
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
 });

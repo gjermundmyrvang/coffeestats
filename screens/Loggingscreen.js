@@ -35,6 +35,20 @@ export default function Loggingscreen() {
     }
   };
 
+  const deleteEntry = async (id) => {
+    const updatedEntries = entries.filter((_, index) => index !== id);
+    try {
+      await AsyncStorage.setItem(
+        STORAGEKEYS.ENTRIES,
+        JSON.stringify(updatedEntries)
+      );
+      setEntries(updatedEntries);
+      console.log("Entry deleted:", id);
+    } catch (error) {
+      console.error("Failed to delete entry", error);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.safe}>
       {/* Toggle Button */}
@@ -59,7 +73,7 @@ export default function Loggingscreen() {
 
       {/* Conditional Rendering */}
       {view === "history" ? (
-        <History entries={entries} />
+        <History entries={entries} onDelete={deleteEntry} />
       ) : (
         <Stats entries={entries} />
       )}
