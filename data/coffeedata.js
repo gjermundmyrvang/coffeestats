@@ -14,6 +14,27 @@ export const coffeedata = [
       "A strong, concentrated coffee served in small amounts, typically used as a base for many coffee drinks.",
   },
   {
+    name: "Double Espresso",
+    caffeine_mg: 2.1,
+    sizes_ml: [60],
+    description:
+      "A double shot of espresso, offering a rich and intense coffee experience with twice the caffeine.",
+  },
+  {
+    name: "Affogato",
+    caffeine_mg: 2.1,
+    sizes_ml: [60],
+    description:
+      "A scoop of vanilla ice cream 'drowned' in a shot of hot espresso—dessert and coffee in one.",
+  },
+  {
+    name: "Cortado",
+    caffeine_mg: 1.8,
+    sizes_ml: [60, 120],
+    description:
+      "An equal mix of espresso and steamed milk, offering a balanced, strong, and smooth flavor.",
+  },
+  {
     name: "Americano",
     caffeine_mg: 0.26,
     sizes_ml: [240, 350],
@@ -26,6 +47,13 @@ export const coffeedata = [
     sizes_ml: [240, 350, 470],
     description:
       "Espresso mixed with steamed milk and a light layer of foam, making it creamy and mild.",
+  },
+  {
+    name: "Double Latte",
+    caffeine_mg: 0.52,
+    sizes_ml: [240, 350, 470],
+    description:
+      "A latte made with a double shot of espresso, providing a stronger kick while keeping the creamy milk base.",
   },
   {
     name: "Cappuccino",
@@ -54,6 +82,13 @@ export const coffeedata = [
     sizes_ml: [180, 240],
     description:
       "A rich, velvety coffee with espresso and microfoam milk, offering a stronger coffee taste than a latte.",
+  },
+  {
+    name: "Iced Coffee",
+    caffeine_mg: 0.4,
+    sizes_ml: [350, 470],
+    description:
+      "Chilled brewed coffee served over ice, offering a refreshing and smooth cold beverage with moderate caffeine.",
   },
   {
     name: "Cold Brew",
