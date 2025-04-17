@@ -15,6 +15,7 @@ import { GenericModal } from "../components/GenericModal";
 import Credits from "../components/settingscomponents/Credits";
 import EditProfile from "../components/settingscomponents/EditProfile";
 import { STORAGEKEYS } from "../constants/AsyncKeys";
+import InfoMg from "../components/settingscomponents/InfoMg";
 
 export const Settingsscreen = () => {
   const [showModal, setshowModal] = useState(false);
@@ -105,6 +106,11 @@ export const Settingsscreen = () => {
             icon={"shield-checkmark-outline"}
             text={"Credits"}
             onClick={() => openModal(<Credits />)}
+          />
+          <SettingsItem
+            icon={"library-outline"}
+            text={"Caffeine: Your Daily Boost Explained"}
+            onClick={() => openModal(<InfoMg />)}
           />
         </View>
         <Text style={styles.h2}>Data</Text>
