@@ -21,7 +21,6 @@ import { Snackbar } from "../components/Snackbar";
 import { ProfileContext } from "../context/ProfileContext";
 
 const coffeeData = coffeedata;
-const DAILY_MESSAGE_KEY = "lastMessageDate";
 
 export default function Homescreen() {
   const [greeting, setGreeting] = useState("");
@@ -31,8 +30,7 @@ export default function Homescreen() {
   const [showDaily, setShowDaily] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [showSnackbar, setShowSnackbar] = useState(false);
-  const { profile, setProfile, loading, reloadProfile } =
-    useContext(ProfileContext);
+  const { profile, setProfile, loading } = useContext(ProfileContext);
 
   const triggerSnackbar = (message) => {
     setSnackbarMessage(message);
@@ -149,6 +147,7 @@ const CoffeeCard = ({
     <TouchableOpacity
       style={styles.card}
       onPress={() => setExpanded(!expanded)}
+      activeOpacity={0.6}
     >
       <View style={styles.cardHeader}>
         <Text style={styles.coffeeName}>{coffee.name}</Text>
@@ -237,23 +236,36 @@ const BottomModal = ({
 
   const addPoints = async () => {
     try {
+      const fixedSizePointsRule = (size) => {
+        if (size >= 400 && size < 500) return 35;
+        if (size >= 300 && size < 400) return 30;
+        if (size >= 200 && size < 300) return 25;
+        if (size >= 100 && size < 200) return 20;
+        if (size < 100) return 15;
+
+        return 50;
+      };
       const getPointsForCoffee = (name, size) => {
         const rules = {
-          Espresso: () => 40,
-          Americano: () => (size === 350 ? 40 : 20),
-          "Regular Filter Coffee": () => {
-            if (size === 350) return 30;
-            if (size > 350) return 40;
-            return 20;
-          },
+          Espresso: () => 15,
+          Cortado: () => 15,
+          Affogato: () => 15,
         };
 
         const rule = rules[name];
-        return rule ? rule() : 20;
+        let rulepoints = rule ? rule() : 0;
+        rulepoints += fixedSizePointsRule(size);
+        return rulepoints;
       };
 
-      const points = getPointsForCoffee(coffee.name, size);
-
+      let points = getPointsForCoffee(coffee.name, size);
+      let bonuspoints = 0;
+      if (Math.random() < 0.3) bonuspoints += 10;
+      let snackstring =
+        bonuspoints > 0
+          ? `+${points} points earned! Bonus: ${bonuspoints} points`
+          : `+${points} points earned!`;
+      points += bonuspoints;
       const currentPoints = Number(profile.points) || 0;
       const newPoints = currentPoints + points;
       const updatedProfile = { ...profile, points: newPoints };
@@ -263,7 +275,7 @@ const BottomModal = ({
         STORAGEKEYS.PROFILE,
         JSON.stringify(updatedProfile)
       );
-      trigger(`+${points} points earned!`);
+      trigger(snackstring);
 
       console.log("New points:", newPoints);
     } catch (error) {
