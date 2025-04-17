@@ -1,11 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
-import {
-  Modal,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  View,
-} from "react-native";
+import { Modal, Pressable, StyleSheet, View } from "react-native";
 
 export const GenericModal = ({ visible, onClose, children }) => {
   return (
@@ -15,21 +10,19 @@ export const GenericModal = ({ visible, onClose, children }) => {
       visible={visible}
       onRequestClose={onClose}
     >
-      <TouchableWithoutFeedback onPress={onClose}>
-        <View style={styles.backdrop}>
-          <View style={styles.modalContainer}>
-            <TouchableWithoutFeedback onPress={onClose}>
-              <Ionicons
-                name="close-sharp"
-                size={24}
-                color={"#1d1d1d"}
-                style={styles.icon}
-              />
-            </TouchableWithoutFeedback>
-            {children}
-          </View>
+      <View style={styles.backdrop}>
+        <View style={styles.modalContainer}>
+          <Pressable style={styles.iconWrapper} onPress={onClose}>
+            <Ionicons
+              name="close-sharp"
+              size={24}
+              color={"#1d1d1d"}
+              style={styles.icon}
+            />
+          </Pressable>
+          {children}
         </View>
-      </TouchableWithoutFeedback>
+      </View>
     </Modal>
   );
 };
@@ -41,20 +34,22 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   modalContainer: {
-    flex: 1,
+    maxHeight: "80%",
     backgroundColor: "#fff",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingTop: 40,
     paddingBottom: 20,
-    maxHeight: "80%",
-    position: "relative",
   },
-  icon: {
+  iconWrapper: {
     position: "absolute",
-    padding: 10,
-    top: 5,
+    top: 10,
     right: 10,
     zIndex: 10,
+    padding: 10,
+  },
+  icon: {
+    // No extra styles needed here anymore
   },
 });
