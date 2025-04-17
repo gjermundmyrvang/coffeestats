@@ -3,7 +3,7 @@
     "name": "Coffee Stats",
     "slug": "coffeestats",
     "owner": "gjerry10",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "orientation": "portrait",
     "icon": "./assets/coffeeicon.png",
     "userInterfaceStyle": "light",
