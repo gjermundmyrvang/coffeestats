@@ -1,6 +1,7 @@
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
+import CaffeineScale from "./Caffeinescale";
 
 export const StatCards = ({ entries }) => {
   const totalCoffees = entries.length;
@@ -65,6 +66,7 @@ export const StatCards = ({ entries }) => {
 
   return (
     <View style={styles.container}>
+      <CaffeineScale totalCaffeineMg={caffeineToday} />
       <ListItem
         icon={<Ionicons name="bar-chart-outline" size={20} color="#FF6868" />}
         label="Coffees Today"
