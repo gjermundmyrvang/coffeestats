@@ -1,12 +1,34 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withRepeat,
+  withTiming,
+} from "react-native-reanimated";
 
 export default function LevelCard({ level, points }) {
-  if (!level) {
-    <View style={styles.levelCard}>
-      <Text style={styles.levelTitle}>Failed getting level</Text>
-    </View>;
-  }
+  const glow = useSharedValue(0);
+
+  useEffect(() => {
+    glow.value = withRepeat(withTiming(1, { duration: 1500 }), -1, true);
+  }, []);
+
+  const animatedGlowStyle = useAnimatedStyle(() => ({
+    shadowColor: level.currentLevel.color,
+    shadowOpacity: 0.5 + glow.value * 0.4,
+    shadowRadius: 10 + glow.value * 5,
+    shadowOffset: { width: 0, height: 0 },
+    transform: [{ scale: 1 + glow.value * 0.02 }],
+  }));
+
+  if (!level)
+    return (
+      <View style={styles.levelCard}>
+        <Text style={styles.levelTitle}>Failed getting level</Text>
+      </View>
+    );
+
   return (
     <View style={styles.levelCard}>
       <Text style={styles.levelTitle}>Coffee Rank</Text>
@@ -16,22 +38,24 @@ export default function LevelCard({ level, points }) {
       </Text>
 
       {/* Progress Bar */}
-      <View
-        style={[
-          styles.progressBar,
-          { borderColor: `${level.currentLevel.color}` },
-        ]}
-      >
+      <Animated.View style={[styles.glowWrapper, animatedGlowStyle]}>
         <View
           style={[
-            styles.progressFill,
-            {
-              width: `${level.progress * 100}%`,
-              backgroundColor: `${level.currentLevel.color}`,
-            },
+            styles.progressBar,
+            { borderColor: level.currentLevel.color },
           ]}
-        />
-      </View>
+        >
+          <View
+            style={[
+              styles.progressFill,
+              {
+                width: `${level.progress * 100}%`,
+                backgroundColor: level.currentLevel.color,
+              },
+            ]}
+          />
+        </View>
+      </Animated.View>
     </View>
   );
 }
@@ -69,6 +93,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#bbb",
     marginTop: 4,
+  },
+  glowWrapper: {
+    borderRadius: 12,
+    padding: 2,
   },
   progressBar: {
     width: "100%",
