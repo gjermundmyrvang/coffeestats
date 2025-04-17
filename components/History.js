@@ -76,10 +76,7 @@ export default function History({ entries, onDelete }) {
           maxToRenderPerBatch={10}
           renderItem={({ item, index }) =>
             filter === "all" ? (
-              <Animated.View
-                entering={FadeInDown.delay(200).duration(400)}
-                exiting={FadeInDown.delay(400).duration(500)}
-              >
+              <Animated.View entering={FadeInDown.delay(200).duration(400)}>
                 <CoffeeCard item={item} onclick={() => handleDelete(index)} />
               </Animated.View>
             ) : (
