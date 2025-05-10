@@ -34,7 +34,8 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   modalContainer: {
-    maxHeight: "80%",
+    minHeight: "80%",
+    maxHeight: "90%",
     backgroundColor: "#fff",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
