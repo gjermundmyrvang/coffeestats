@@ -11,4 +11,5 @@ export const levelsdata = [
   { name: "The Coffee Magnate", minScore: 4500, color: "#FF0055" },
   { name: "The Coffee Boss", minScore: 5700, color: "#FF2A2A" },
   { name: "Coffee Monster", minScore: 7000, color: "#55FF71" },
+  { name: "Coffee Philosopher", minScore: 10000, color: "#3D91FF" },
 ];
