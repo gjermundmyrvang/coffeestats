@@ -148,6 +148,7 @@ const styles = StyleSheet.create({
   },
   button: {
     width: "100%",
+    maxWidth: 400,
     backgroundColor: "#fff",
     paddingVertical: 14,
     paddingHorizontal: 20,
