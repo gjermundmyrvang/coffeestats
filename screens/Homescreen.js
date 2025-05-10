@@ -250,6 +250,7 @@ const BottomModal = ({
           Espresso: () => 15,
           Cortado: () => 15,
           Affogato: () => 15,
+          "Double Espresso": () => 15,
         };
 
         const rule = rules[name];
@@ -354,7 +355,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "#ddd",
   },
   headerText: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: "bold",
     color: "#1d1d1d",
   },
