@@ -11,6 +11,7 @@ import Profilescreen from "./screens/Profilescreen";
 import { Ionicons } from "@expo/vector-icons";
 import { STORAGEKEYS } from "./constants/AsyncKeys";
 import { Settingsscreen } from "./screens/Settingsscreen";
+import * as Haptics from "expo-haptics";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -18,6 +19,11 @@ const Tab = createBottomTabNavigator();
 const Tabs = () => {
   return (
     <Tab.Navigator
+      screenListeners={{
+        tabPress: (e) => {
+          Haptics.selectionAsync(Haptics.ImpactFeedbackStyle.Medium);
+        },
+      }}
       initialRouteName="home"
       options={{ headerShown: false }}
       screenOptions={({ route }) => ({
