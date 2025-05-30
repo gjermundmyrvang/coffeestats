@@ -88,11 +88,11 @@ export default function Homescreen() {
           {greeting} {profile ? profile.name.split(" ")[0] : "there"}! 👋
         </Text>
       </View>
-      {showDaily && (
-        <DailyMessage data={coffeeData} onClose={handleRemoveMessage} />
-      )}
       {coffeeData ? (
         <>
+          {showDaily && (
+            <DailyMessage data={coffeeData} onClose={handleRemoveMessage} />
+          )}
           <FlatList
             data={coffeeData}
             keyExtractor={(item) => item.name}
@@ -340,6 +340,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f8f9fa",
+    position: "relative",
   },
   loader: {
     flex: 1,
