@@ -275,7 +275,7 @@ const CoffeeCard = ({
                 <Ionicons
                   name={isFavorite ? "star" : "star-outline"}
                   size={20}
-                  color={isFavorite ? "#FFD700" : "#b3b3b3"}
+                  color={isFavorite ? "#1d1d1d" : "#b3b3b3"}
                 />
               </TouchableOpacity>
 
