@@ -106,6 +106,15 @@ export default function Homescreen() {
     setShowDaily(false);
   };
 
+  const updateDisplayData = (newFavorites, newHidden) => {
+    const visible = coffeeData.filter((item) => !newHidden.includes(item.name));
+    const sorted = [
+      ...visible.filter((item) => newFavorites.includes(item.name)),
+      ...visible.filter((item) => !newFavorites.includes(item.name)),
+    ];
+    setDisplayData(sorted);
+  };
+
   const toggleFavorite = async (coffeeName) => {
     try {
       const updatedFavorites = favorites.includes(coffeeName)
@@ -114,16 +123,7 @@ export default function Homescreen() {
 
       setFavorites(updatedFavorites);
       await AsyncStorage.setItem("favorites", JSON.stringify(updatedFavorites));
-
-      setDisplayData((prevData) => {
-        const sorted = [...prevData].sort((a, b) => {
-          const aIsFav = updatedFavorites.includes(a.name);
-          const bIsFav = updatedFavorites.includes(b.name);
-          if (aIsFav === bIsFav) return 0;
-          return aIsFav ? -1 : 1;
-        });
-        return sorted;
-      });
+      updateDisplayData(updatedFavorites, hidden);
     } catch (error) {
       console.error("Failed to update favorites:", error);
     }
@@ -137,12 +137,7 @@ export default function Homescreen() {
 
       setHidden(updatedHidden);
       await AsyncStorage.setItem("hidden", JSON.stringify(updatedHidden));
-
-      setDisplayData((prevData) => {
-        return prevData.filter(
-          (coffee) => !updatedHidden.includes(coffee.name)
-        );
-      });
+      updateDisplayData(favorites, updatedHidden);
     } catch (error) {
       console.error("Failed to update hidden list:", error);
     }
