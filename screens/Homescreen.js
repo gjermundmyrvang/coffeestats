@@ -23,6 +23,9 @@ import { ProfileContext } from "../context/ProfileContext";
 const coffeeData = coffeedata;
 
 export default function Homescreen() {
+  const [displayData, setDisplayData] = useState([]);
+  const [favorites, setFavorites] = useState([]);
+  const [hidden, setHidden] = useState([]);
   const [greeting, setGreeting] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCoffee, setSelectedCoffee] = useState(null);
@@ -41,6 +44,37 @@ export default function Homescreen() {
 
   useEffect(() => {
     checkDailyMessage();
+  }, []);
+
+  useEffect(() => {
+    const fetchAndFilterCoffee = async () => {
+      try {
+        const favs = JSON.parse(await AsyncStorage.getItem("favorites")) || [];
+        const hiddenList =
+          JSON.parse(await AsyncStorage.getItem("hidden")) || [];
+
+        setFavorites(favs);
+        setHidden(hiddenList);
+
+        // Filter out hidden items
+        const visible = coffeeData.filter(
+          (item) => !hiddenList.includes(item.name)
+        );
+
+        // Sort to push favorites on top
+        const sorted = [
+          ...visible.filter((item) => favs.includes(item.name)),
+          ...visible.filter((item) => !favs.includes(item.name)),
+        ];
+
+        setDisplayData(sorted);
+      } catch (err) {
+        console.error("Error loading favorites/hidden:", err);
+        setDisplayData(coffeeData); // fallback
+      }
+    };
+
+    fetchAndFilterCoffee();
   }, []);
 
   useEffect(() => {
@@ -72,6 +106,43 @@ export default function Homescreen() {
     setShowDaily(false);
   };
 
+  const updateDisplayData = (newFavorites, newHidden) => {
+    const visible = coffeeData.filter((item) => !newHidden.includes(item.name));
+    const sorted = [
+      ...visible.filter((item) => newFavorites.includes(item.name)),
+      ...visible.filter((item) => !newFavorites.includes(item.name)),
+    ];
+    setDisplayData(sorted);
+  };
+
+  const toggleFavorite = async (coffeeName) => {
+    try {
+      const updatedFavorites = favorites.includes(coffeeName)
+        ? favorites.filter((name) => name !== coffeeName)
+        : [...favorites, coffeeName];
+
+      setFavorites(updatedFavorites);
+      await AsyncStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+      updateDisplayData(updatedFavorites, hidden);
+    } catch (error) {
+      console.error("Failed to update favorites:", error);
+    }
+  };
+
+  const toggleHidden = async (coffeeName) => {
+    try {
+      const updatedHidden = hidden.includes(coffeeName)
+        ? hidden.filter((name) => name !== coffeeName)
+        : [...hidden, coffeeName];
+
+      setHidden(updatedHidden);
+      await AsyncStorage.setItem("hidden", JSON.stringify(updatedHidden));
+      updateDisplayData(favorites, updatedHidden);
+    } catch (error) {
+      console.error("Failed to update hidden list:", error);
+    }
+  };
+
   if (loading) {
     return (
       <View style={styles.loader}>
@@ -88,22 +159,26 @@ export default function Homescreen() {
           {greeting} {profile ? profile.name.split(" ")[0] : "there"}! 👋
         </Text>
       </View>
-      {showDaily && (
-        <DailyMessage data={coffeeData} onClose={handleRemoveMessage} />
-      )}
-      {coffeeData ? (
+      {displayData ? (
         <>
+          {showDaily && (
+            <DailyMessage data={displayData} onClose={handleRemoveMessage} />
+          )}
           <FlatList
-            data={coffeeData}
+            data={displayData}
             keyExtractor={(item) => item.name}
             initialNumToRender={10}
             maxToRenderPerBatch={10}
             renderItem={({ item }) => (
               <CoffeeCard
                 coffee={item}
+                favorites={favorites}
+                hidden={hidden}
                 setModalVisible={setModalVisible}
                 setSelectedCoffee={setSelectedCoffee}
                 setSelectedSize={setSelectedSize}
+                onToggleFavorite={toggleFavorite}
+                onToggleHidden={toggleHidden}
               />
             )}
           />
@@ -131,9 +206,13 @@ export default function Homescreen() {
 
 const CoffeeCard = ({
   coffee,
+  favorites,
+  hidden,
   setModalVisible,
   setSelectedCoffee,
   setSelectedSize,
+  onToggleFavorite,
+  onToggleHidden,
 }) => {
   const [expanded, setExpanded] = useState(false);
 
@@ -143,6 +222,9 @@ const CoffeeCard = ({
     setModalVisible(true);
   };
 
+  const isFavorite = favorites.includes(coffee.name);
+  const isHidden = hidden.includes(coffee.name);
+
   return (
     <TouchableOpacity
       style={styles.card}
@@ -151,11 +233,11 @@ const CoffeeCard = ({
     >
       <View style={styles.cardHeader}>
         <Text style={styles.coffeeName}>{coffee.name}</Text>
-        {expanded ? (
-          <Ionicons name="chevron-up" size={20} color="#1d1d1d" />
-        ) : (
-          <Ionicons name="chevron-down" size={20} color="#e0e0e0" />
-        )}
+        <Ionicons
+          name={expanded ? "chevron-up" : "chevron-down"}
+          size={20}
+          color={expanded ? "#1d1d1d" : "#e0e0e0"}
+        />
       </View>
 
       <View style={styles.sizesContainer}>
@@ -176,9 +258,34 @@ const CoffeeCard = ({
           style={styles.expandedContent}
         >
           <Text style={styles.description}>{coffee.description}</Text>
-          <Text style={styles.caffeine}>
-            {coffee.caffeine_mg}mg caffeine per ml
-          </Text>
+          <View style={styles.expandedRow}>
+            <Text style={styles.caffeine}>
+              {coffee.caffeine_mg}mg caffeine per ml
+            </Text>
+            <View style={{ flexDirection: "row" }}>
+              <TouchableOpacity
+                onPress={() => onToggleFavorite(coffee.name)}
+                style={{ marginHorizontal: 5 }}
+              >
+                <Ionicons
+                  name={isFavorite ? "star" : "star-outline"}
+                  size={20}
+                  color={isFavorite ? "#1d1d1d" : "#b3b3b3"}
+                />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => onToggleHidden(coffee.name)}
+                style={{ marginHorizontal: 5 }}
+              >
+                <Ionicons
+                  name={isHidden ? "eye" : "eye-off-outline"}
+                  size={20}
+                  color={isHidden ? "#4f4f4f" : "#b3b3b3"}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
         </Animated.View>
       )}
     </TouchableOpacity>
@@ -289,48 +396,51 @@ const BottomModal = ({
       animationType="fade"
       transparent={true}
       visible={visible}
-      onRequestClose={handleCloseModal} // Handle close correctly
+      onRequestClose={handleCloseModal}
     >
-      <View style={styles.modalOverlay}>
-        <View style={styles.modalContainer}>
-          <Text style={styles.modalTitle}>{coffee.name}</Text>
-          <TouchableOpacity
-            onPress={handleCloseModal}
-            style={{ position: "absolute", top: 15, right: 15 }}
-          >
-            <Ionicons name="close-circle" size={42} color={"#9A1A1A"} />
-          </TouchableOpacity>
-          <View style={styles.row}>
-            <Ionicons name="resize-sharp" size={20} color={"#555"} />
-            <Text style={styles.modalContent}>Size: {size}ml</Text>
-          </View>
-          <View style={styles.row}>
-            <Ionicons name="pulse-sharp" size={20} color={"#555"} />
-            <Text style={styles.modalContent}>
-              Total caffeine: {calculateCaffeine(size)}mg
-            </Text>
-          </View>
-          <View style={styles.row}>
-            <Ionicons name="calendar-sharp" size={20} color={"#555"} />
-            <Text style={styles.modalContent}>
-              Date: {new Date().toLocaleDateString()}
-            </Text>
-          </View>
-          <View style={styles.row}>
-            <Ionicons name="time-sharp" size={20} color={"#555"} />
-            <Text style={styles.modalContent}>
-              Time: {new Date().toLocaleTimeString()}
-            </Text>
-          </View>
-          {/* Save Button */}
-          <TouchableOpacity
-            style={styles.closeButton}
-            onPress={handleSave}
-            accessibilityLabel="Log coffee"
-          >
-            <Text style={styles.closeButtonText}>Log coffee</Text>
-          </TouchableOpacity>
+      <View style={styles.modalContainer}>
+        <Text style={styles.modalTitle}>{coffee.name}</Text>
+        <TouchableOpacity
+          onPress={handleCloseModal}
+          style={{ position: "absolute", top: 15, right: 15 }}
+        >
+          <Ionicons name="close-circle" size={42} color={"#fafafa"} />
+        </TouchableOpacity>
+        <View style={styles.row}>
+          <Ionicons name="resize-sharp" size={20} color={"#b3b3b3"} />
+          <Text style={styles.modalContent}>
+            <Text style={{ fontWeight: "800" }}>Size:</Text> {size}ml
+          </Text>
         </View>
+        <View style={styles.row}>
+          <Ionicons name="pulse-sharp" size={20} color={"#b3b3b3"} />
+          <Text style={styles.modalContent}>
+            <Text style={{ fontWeight: "800" }}>Total caffeine:</Text>{" "}
+            {calculateCaffeine(size)}mg
+          </Text>
+        </View>
+        <View style={styles.row}>
+          <Ionicons name="calendar-sharp" size={20} color={"#b3b3b3"} />
+          <Text style={styles.modalContent}>
+            <Text style={{ fontWeight: "800" }}>Date:</Text>{" "}
+            {new Date().toLocaleDateString()}
+          </Text>
+        </View>
+        <View style={styles.row}>
+          <Ionicons name="time-sharp" size={20} color={"#b3b3b3"} />
+          <Text style={styles.modalContent}>
+            <Text style={{ fontWeight: "800" }}>Time:</Text>{" "}
+            {new Date().toLocaleTimeString()}
+          </Text>
+        </View>
+        {/* Save Button */}
+        <TouchableOpacity
+          style={styles.closeButton}
+          onPress={handleSave}
+          accessibilityLabel="Log coffee"
+        >
+          <Text style={styles.closeButtonText}>Log coffee</Text>
+        </TouchableOpacity>
       </View>
     </Modal>
   );
@@ -340,6 +450,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f8f9fa",
+    position: "relative",
   },
   loader: {
     flex: 1,
@@ -369,8 +480,8 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     marginHorizontal: 12,
     shadowColor: "#000",
-    shadowOpacity: 0.06,
-    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 4 },
     shadowRadius: 6,
     elevation: 2,
   },
@@ -393,7 +504,8 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   sizeButton: {
-    backgroundColor: "#f2f2f2",
+    borderWidth: 1.5,
+    borderColor: "#ececec",
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 12,
@@ -403,7 +515,8 @@ const styles = StyleSheet.create({
   sizeText: {
     fontSize: 14,
     fontWeight: "500",
-    color: "#333",
+    fontVariant: "mono",
+    color: "#1d1d1d",
   },
   expandedContent: {
     marginTop: 8,
@@ -416,37 +529,40 @@ const styles = StyleSheet.create({
     color: "#555",
     marginBottom: 6,
   },
+  expandedRow: {
+    flexDirection: "row",
+    width: "100%",
+    justifyContent: "space-between",
+  },
   caffeine: {
     fontSize: 12,
     color: "#999",
   },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: "flex-end",
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
-  },
   modalContainer: {
-    backgroundColor: "#e0e0e0",
+    position: "absolute",
+    bottom: 0,
+    width: "100%",
+    maxHeight: "70%",
+    backgroundColor: "#1d1d1d",
     padding: 25,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     alignItems: "flex-start",
-    shadowColor: "#FFA641",
-    shadowOpacity: 0.4,
+    shadowColor: "#1d1d1d",
+    shadowOpacity: 1,
     shadowOffset: { width: 0, height: -6 },
-    shadowRadius: 18,
+    shadowRadius: 16,
     elevation: 5,
-    position: "relative",
   },
   modalTitle: {
     fontSize: 24,
     fontWeight: "600",
     marginBottom: 15,
-    color: "#333",
+    color: "#fafafa",
   },
   modalContent: {
     fontSize: 16,
-    color: "#555",
+    color: "#b3b3b3",
     textAlign: "center",
     marginBottom: 20,
   },
@@ -457,7 +573,7 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   closeButton: {
-    backgroundColor: "#6b4f4f",
+    backgroundColor: "#fafafa",
     width: "100%",
     paddingVertical: 12,
     paddingHorizontal: 30,
@@ -467,7 +583,7 @@ const styles = StyleSheet.create({
   closeButtonText: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#fff",
+    color: "#1d1d1d",
     textAlign: "center",
   },
 });

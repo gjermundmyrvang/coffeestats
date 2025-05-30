@@ -99,14 +99,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginHorizontal: 5,
     borderRadius: 20,
-    backgroundColor: "#ADADAD",
+    backgroundColor: "#1d1d1d",
+    opacity: 0.3,
   },
   activeButton: {
-    backgroundColor: "#FFBA6C",
+    opacity: 1,
   },
   buttonText: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#333",
+    color: "#fafafa",
   },
 });

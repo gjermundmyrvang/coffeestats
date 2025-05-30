@@ -26,7 +26,12 @@ export default function LinePlotCharts({ entries }) {
   };
 
   const chartData = groupEntriesByTimeframe(selectedTimeframe);
-  const labels = Object.keys(chartData);
+  const labels = Object.keys(chartData).map((label, idx) => {
+    if (idx % 2 === 0) {
+      return label;
+    }
+    return "";
+  });
   const dataPoints = Object.values(chartData);
   console.log("chartData", chartData);
   console.log("Labels", labels);
