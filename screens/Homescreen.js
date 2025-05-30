@@ -23,6 +23,9 @@ import { ProfileContext } from "../context/ProfileContext";
 const coffeeData = coffeedata;
 
 export default function Homescreen() {
+  const [displayData, setDisplayData] = useState([]);
+  const [favorites, setFavorites] = useState([]);
+  const [hidden, setHidden] = useState([]);
   const [greeting, setGreeting] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCoffee, setSelectedCoffee] = useState(null);
@@ -41,6 +44,37 @@ export default function Homescreen() {
 
   useEffect(() => {
     checkDailyMessage();
+  }, []);
+
+  useEffect(() => {
+    const fetchAndFilterCoffee = async () => {
+      try {
+        const favs = JSON.parse(await AsyncStorage.getItem("favorites")) || [];
+        const hiddenList =
+          JSON.parse(await AsyncStorage.getItem("hidden")) || [];
+
+        setFavorites(favs);
+        setHidden(hiddenList);
+
+        // Filter out hidden items
+        const visible = coffeeData.filter(
+          (item) => !hiddenList.includes(item.name)
+        );
+
+        // Sort to push favorites on top
+        const sorted = [
+          ...visible.filter((item) => favs.includes(item.name)),
+          ...visible.filter((item) => !favs.includes(item.name)),
+        ];
+
+        setDisplayData(sorted);
+      } catch (err) {
+        console.error("Error loading favorites/hidden:", err);
+        setDisplayData(coffeeData); // fallback
+      }
+    };
+
+    fetchAndFilterCoffee();
   }, []);
 
   useEffect(() => {
@@ -72,6 +106,48 @@ export default function Homescreen() {
     setShowDaily(false);
   };
 
+  const toggleFavorite = async (coffeeName) => {
+    try {
+      const updatedFavorites = favorites.includes(coffeeName)
+        ? favorites.filter((name) => name !== coffeeName)
+        : [...favorites, coffeeName];
+
+      setFavorites(updatedFavorites);
+      await AsyncStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+
+      setDisplayData((prevData) => {
+        const sorted = [...prevData].sort((a, b) => {
+          const aIsFav = updatedFavorites.includes(a.name);
+          const bIsFav = updatedFavorites.includes(b.name);
+          if (aIsFav === bIsFav) return 0;
+          return aIsFav ? -1 : 1;
+        });
+        return sorted;
+      });
+    } catch (error) {
+      console.error("Failed to update favorites:", error);
+    }
+  };
+
+  const toggleHidden = async (coffeeName) => {
+    try {
+      const updatedHidden = hidden.includes(coffeeName)
+        ? hidden.filter((name) => name !== coffeeName)
+        : [...hidden, coffeeName];
+
+      setHidden(updatedHidden);
+      await AsyncStorage.setItem("hidden", JSON.stringify(updatedHidden));
+
+      setDisplayData((prevData) => {
+        return prevData.filter(
+          (coffee) => !updatedHidden.includes(coffee.name)
+        );
+      });
+    } catch (error) {
+      console.error("Failed to update hidden list:", error);
+    }
+  };
+
   if (loading) {
     return (
       <View style={styles.loader}>
@@ -88,22 +164,26 @@ export default function Homescreen() {
           {greeting} {profile ? profile.name.split(" ")[0] : "there"}! 👋
         </Text>
       </View>
-      {coffeeData ? (
+      {displayData ? (
         <>
           {showDaily && (
-            <DailyMessage data={coffeeData} onClose={handleRemoveMessage} />
+            <DailyMessage data={displayData} onClose={handleRemoveMessage} />
           )}
           <FlatList
-            data={coffeeData}
+            data={displayData}
             keyExtractor={(item) => item.name}
             initialNumToRender={10}
             maxToRenderPerBatch={10}
             renderItem={({ item }) => (
               <CoffeeCard
                 coffee={item}
+                favorites={favorites}
+                hidden={hidden}
                 setModalVisible={setModalVisible}
                 setSelectedCoffee={setSelectedCoffee}
                 setSelectedSize={setSelectedSize}
+                onToggleFavorite={toggleFavorite}
+                onToggleHidden={toggleHidden}
               />
             )}
           />
@@ -131,9 +211,13 @@ export default function Homescreen() {
 
 const CoffeeCard = ({
   coffee,
+  favorites,
+  hidden,
   setModalVisible,
   setSelectedCoffee,
   setSelectedSize,
+  onToggleFavorite,
+  onToggleHidden,
 }) => {
   const [expanded, setExpanded] = useState(false);
 
@@ -143,6 +227,9 @@ const CoffeeCard = ({
     setModalVisible(true);
   };
 
+  const isFavorite = favorites.includes(coffee.name);
+  const isHidden = hidden.includes(coffee.name);
+
   return (
     <TouchableOpacity
       style={styles.card}
@@ -151,11 +238,11 @@ const CoffeeCard = ({
     >
       <View style={styles.cardHeader}>
         <Text style={styles.coffeeName}>{coffee.name}</Text>
-        {expanded ? (
-          <Ionicons name="chevron-up" size={20} color="#1d1d1d" />
-        ) : (
-          <Ionicons name="chevron-down" size={20} color="#e0e0e0" />
-        )}
+        <Ionicons
+          name={expanded ? "chevron-up" : "chevron-down"}
+          size={20}
+          color={expanded ? "#1d1d1d" : "#e0e0e0"}
+        />
       </View>
 
       <View style={styles.sizesContainer}>
@@ -176,9 +263,34 @@ const CoffeeCard = ({
           style={styles.expandedContent}
         >
           <Text style={styles.description}>{coffee.description}</Text>
-          <Text style={styles.caffeine}>
-            {coffee.caffeine_mg}mg caffeine per ml
-          </Text>
+          <View style={styles.expandedRow}>
+            <Text style={styles.caffeine}>
+              {coffee.caffeine_mg}mg caffeine per ml
+            </Text>
+            <View style={{ flexDirection: "row" }}>
+              <TouchableOpacity
+                onPress={() => onToggleFavorite(coffee.name)}
+                style={{ marginHorizontal: 5 }}
+              >
+                <Ionicons
+                  name={isFavorite ? "star" : "star-outline"}
+                  size={20}
+                  color={isFavorite ? "#FFD700" : "#b3b3b3"}
+                />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => onToggleHidden(coffee.name)}
+                style={{ marginHorizontal: 5 }}
+              >
+                <Ionicons
+                  name={isHidden ? "eye" : "eye-off-outline"}
+                  size={20}
+                  color={isHidden ? "#4f4f4f" : "#b3b3b3"}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
         </Animated.View>
       )}
     </TouchableOpacity>
@@ -370,8 +482,8 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     marginHorizontal: 12,
     shadowColor: "#000",
-    shadowOpacity: 0.06,
-    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 4 },
     shadowRadius: 6,
     elevation: 2,
   },
@@ -394,7 +506,8 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   sizeButton: {
-    backgroundColor: "#f2f2f2",
+    backgroundColor: "#1d1d1d",
+    opacity: 0.9,
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 12,
@@ -404,7 +517,7 @@ const styles = StyleSheet.create({
   sizeText: {
     fontSize: 14,
     fontWeight: "500",
-    color: "#333",
+    color: "#ececec",
   },
   expandedContent: {
     marginTop: 8,
@@ -416,6 +529,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#555",
     marginBottom: 6,
+  },
+  expandedRow: {
+    flexDirection: "row",
+    width: "100%",
+    justifyContent: "space-between",
   },
   caffeine: {
     fontSize: 12,
