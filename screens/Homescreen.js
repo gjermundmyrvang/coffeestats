@@ -398,46 +398,49 @@ const BottomModal = ({
       visible={visible}
       onRequestClose={handleCloseModal} // Handle close correctly
     >
-      <View style={styles.modalOverlay}>
-        <View style={styles.modalContainer}>
-          <Text style={styles.modalTitle}>{coffee.name}</Text>
-          <TouchableOpacity
-            onPress={handleCloseModal}
-            style={{ position: "absolute", top: 15, right: 15 }}
-          >
-            <Ionicons name="close-circle" size={42} color={"#9A1A1A"} />
-          </TouchableOpacity>
-          <View style={styles.row}>
-            <Ionicons name="resize-sharp" size={20} color={"#555"} />
-            <Text style={styles.modalContent}>Size: {size}ml</Text>
-          </View>
-          <View style={styles.row}>
-            <Ionicons name="pulse-sharp" size={20} color={"#555"} />
-            <Text style={styles.modalContent}>
-              Total caffeine: {calculateCaffeine(size)}mg
-            </Text>
-          </View>
-          <View style={styles.row}>
-            <Ionicons name="calendar-sharp" size={20} color={"#555"} />
-            <Text style={styles.modalContent}>
-              Date: {new Date().toLocaleDateString()}
-            </Text>
-          </View>
-          <View style={styles.row}>
-            <Ionicons name="time-sharp" size={20} color={"#555"} />
-            <Text style={styles.modalContent}>
-              Time: {new Date().toLocaleTimeString()}
-            </Text>
-          </View>
-          {/* Save Button */}
-          <TouchableOpacity
-            style={styles.closeButton}
-            onPress={handleSave}
-            accessibilityLabel="Log coffee"
-          >
-            <Text style={styles.closeButtonText}>Log coffee</Text>
-          </TouchableOpacity>
+      <View style={styles.modalContainer}>
+        <Text style={styles.modalTitle}>{coffee.name}</Text>
+        <TouchableOpacity
+          onPress={handleCloseModal}
+          style={{ position: "absolute", top: 15, right: 15 }}
+        >
+          <Ionicons name="close-circle" size={42} color={"#fafafa"} />
+        </TouchableOpacity>
+        <View style={styles.row}>
+          <Ionicons name="resize-sharp" size={20} color={"#b3b3b3"} />
+          <Text style={styles.modalContent}>
+            <Text style={{ fontWeight: "800" }}>Size:</Text> {size}ml
+          </Text>
         </View>
+        <View style={styles.row}>
+          <Ionicons name="pulse-sharp" size={20} color={"#b3b3b3"} />
+          <Text style={styles.modalContent}>
+            <Text style={{ fontWeight: "800" }}>Total caffeine:</Text>{" "}
+            {calculateCaffeine(size)}mg
+          </Text>
+        </View>
+        <View style={styles.row}>
+          <Ionicons name="calendar-sharp" size={20} color={"#b3b3b3"} />
+          <Text style={styles.modalContent}>
+            <Text style={{ fontWeight: "800" }}>Date:</Text>{" "}
+            {new Date().toLocaleDateString()}
+          </Text>
+        </View>
+        <View style={styles.row}>
+          <Ionicons name="time-sharp" size={20} color={"#b3b3b3"} />
+          <Text style={styles.modalContent}>
+            <Text style={{ fontWeight: "800" }}>Time:</Text>{" "}
+            {new Date().toLocaleTimeString()}
+          </Text>
+        </View>
+        {/* Save Button */}
+        <TouchableOpacity
+          style={styles.closeButton}
+          onPress={handleSave}
+          accessibilityLabel="Log coffee"
+        >
+          <Text style={styles.closeButtonText}>Log coffee</Text>
+        </TouchableOpacity>
       </View>
     </Modal>
   );
@@ -501,8 +504,8 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   sizeButton: {
-    backgroundColor: "#1d1d1d",
-    opacity: 0.9,
+    borderWidth: 1.5,
+    borderColor: "#ececec",
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 12,
@@ -512,7 +515,8 @@ const styles = StyleSheet.create({
   sizeText: {
     fontSize: 14,
     fontWeight: "500",
-    color: "#ececec",
+    fontVariant: "mono",
+    color: "#1d1d1d",
   },
   expandedContent: {
     marginTop: 8,
@@ -534,33 +538,31 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#999",
   },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: "flex-end",
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
-  },
   modalContainer: {
-    backgroundColor: "#e0e0e0",
+    position: "absolute",
+    bottom: 0,
+    width: "100%",
+    maxHeight: "70%",
+    backgroundColor: "#1d1d1d",
     padding: 25,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     alignItems: "flex-start",
-    shadowColor: "#FFA641",
-    shadowOpacity: 0.4,
+    shadowColor: "#1d1d1d",
+    shadowOpacity: 1,
     shadowOffset: { width: 0, height: -6 },
-    shadowRadius: 18,
+    shadowRadius: 16,
     elevation: 5,
-    position: "relative",
   },
   modalTitle: {
     fontSize: 24,
     fontWeight: "600",
     marginBottom: 15,
-    color: "#333",
+    color: "#fafafa",
   },
   modalContent: {
     fontSize: 16,
-    color: "#555",
+    color: "#b3b3b3",
     textAlign: "center",
     marginBottom: 20,
   },
@@ -571,7 +573,7 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   closeButton: {
-    backgroundColor: "#6b4f4f",
+    backgroundColor: "#fafafa",
     width: "100%",
     paddingVertical: 12,
     paddingHorizontal: 30,
@@ -581,7 +583,7 @@ const styles = StyleSheet.create({
   closeButtonText: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#fff",
+    color: "#1d1d1d1",
     textAlign: "center",
   },
 });
