@@ -396,7 +396,7 @@ const BottomModal = ({
       animationType="fade"
       transparent={true}
       visible={visible}
-      onRequestClose={handleCloseModal} // Handle close correctly
+      onRequestClose={handleCloseModal}
     >
       <View style={styles.modalContainer}>
         <Text style={styles.modalTitle}>{coffee.name}</Text>
@@ -583,7 +583,7 @@ const styles = StyleSheet.create({
   closeButtonText: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#1d1d1d1",
+    color: "#1d1d1d",
     textAlign: "center",
   },
 });
