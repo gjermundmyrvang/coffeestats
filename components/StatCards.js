@@ -1,6 +1,6 @@
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import CaffeineScale from "./Caffeinescale";
 
 export const StatCards = ({ entries }) => {
@@ -56,10 +56,11 @@ export const StatCards = ({ entries }) => {
 
   const ListItem = ({ icon, label, value }) => (
     <View style={styles.item}>
-      <View style={styles.left}>
+      <View style={styles.itemRow}>
         {icon}
         <Text style={styles.label}>{label}</Text>
       </View>
+
       <Text style={styles.value}>{value}</Text>
     </View>
   );
@@ -67,115 +68,189 @@ export const StatCards = ({ entries }) => {
   return (
     <View style={styles.container}>
       <CaffeineScale totalCaffeineMg={caffeineToday} />
+      <View style={styles.cardRow}>
+        <ListItemCard
+          icon={<Ionicons name="bar-chart-outline" size={20} color="#FF0A3B" />}
+          label="Coffees Today"
+          value={`${coffeesToday.length} cups`}
+        />
+        <ListItemCard
+          icon={<Ionicons name="cafe-outline" size={20} color="#FF0A3B" />}
+          label="Caffeine Today"
+          value={`${caffeineToday} mg`}
+        />
+      </View>
+      <View style={styles.cardRow}>
+        <ListItemCard
+          icon={<FontAwesome5 name="coffee" size={18} color="#FF0A3B" />}
+          label="Total Coffees"
+          value={`${totalCoffees} cups`}
+        />
+        <ListItemCard
+          icon={<Ionicons name="pulse" size={20} color="#FF0A3B" />}
+          label="Total Caffeine"
+          value={`${totalCaffeine} mg`}
+        />
+      </View>
+      <View style={styles.cardRow}>
+        <ListItemCard
+          icon={<Ionicons name="calendar-outline" size={20} color="#FF0A3B" />}
+          label="First Coffee"
+          value={firstCoffeeDate}
+        />
+        <ListItemCard
+          icon={<Ionicons name="calendar-sharp" size={20} color="#FF0A3B" />}
+          label="Recent Coffee"
+          value={lastCoffeeDate}
+        />
+      </View>
+      <View style={styles.cardRow}>
+        <ListItemCard
+          icon={<Ionicons name="alarm-outline" size={20} color="#FF0A3B" />}
+          label="Earliest Coffee"
+          value={earliestCoffeeTime}
+        />
+        <ListItemCard
+          icon={<Ionicons name="alarm" size={20} color="#FF0A3B" />}
+          label="Latest Coffee"
+          value={latestCoffeeTime}
+        />
+      </View>
       <ListItem
-        icon={<Ionicons name="bar-chart-outline" size={20} color="#FF6868" />}
-        label="Coffees Today"
-        value={`${coffeesToday.length} cups`}
-      />
-      <ListItem
-        icon={<Ionicons name="cafe-outline" size={20} color="#FF6868" />}
-        label="Caffeine Today"
-        value={`${caffeineToday} mg`}
-      />
-      <ListItem
-        icon={<FontAwesome5 name="coffee" size={18} color="#FF6868" />}
-        label="Total Coffees"
-        value={`${totalCoffees} cups`}
-      />
-      <ListItem
-        icon={<Ionicons name="pulse" size={20} color="#FF6868" />}
-        label="Total Caffeine"
-        value={`${totalCaffeine} mg`}
-      />
-      <ListItem
-        icon={<Ionicons name="calendar-outline" size={20} color="#FF6868" />}
-        label="First Coffee"
-        value={firstCoffeeDate}
-      />
-      <ListItem
-        icon={<Ionicons name="calendar-sharp" size={20} color="#FF6868" />}
-        label="Recent Coffee"
-        value={lastCoffeeDate}
-      />
-      <ListItem
-        icon={<Ionicons name="alarm-outline" size={20} color="#FF6868" />}
-        label="Earliest Coffee"
-        value={earliestCoffeeTime}
-      />
-      <ListItem
-        icon={<Ionicons name="alarm" size={20} color="#FF6868" />}
-        label="Latest Coffee"
-        value={latestCoffeeTime}
-      />
-      <ListItem
-        icon={<Ionicons name="bar-chart" size={20} color="#FF6868" />}
+        icon={<Ionicons name="bar-chart" size={20} color="#00C8C8" />}
         label="Most Active Hour"
         value={`${mostActiveHour}:00`}
       />
       <ListItem
-        icon={<Ionicons name="flame" size={20} color="#FF6868" />}
+        icon={<Ionicons name="flame" size={20} color="#00C8C8" />}
         label="Caffeine Provider"
         value={highestCaffeineCoffee}
       />
-
-      <View
-        style={[
-          styles.item,
-          {
-            flexDirection: "column",
-            alignItems: "flex-start",
-            borderBottomWidth: 0,
-          },
-        ]}
-      >
-        <View style={styles.left}>
-          <Ionicons name="list" size={20} color="#FF6868" />
-          <Text style={styles.label}>Coffee Types</Text>
+      <View style={styles.typesContainer}>
+        <View style={styles.rowHeader}>
+          <Ionicons name="list" size={20} color="#FFDD00" />
+          <Text style={[styles.label, { color: "#FFDD00" }]}>Coffee Types</Text>
         </View>
-        <View style={{ marginTop: 8, paddingLeft: 28 }}>
+        <ScrollView style={styles.typeScroll} horizontal={true}>
           {Object.entries(coffeeTypes).map(([type, count]) => (
-            <Text key={type} style={styles.typeItem}>
-              • {type}: {count}
-            </Text>
+            <View style={styles.countCard} key={type}>
+              <Text style={styles.typeText}>{type}</Text>
+              <Text style={styles.countText}>{count} cups</Text>
+            </View>
           ))}
-        </View>
+        </ScrollView>
       </View>
     </View>
   );
 };
 
+const ListItemCard = ({ icon, label, value }) => (
+  <View style={styles.cardItem}>
+    <View style={styles.rowHeader}>
+      <>
+        {icon}
+        <Text style={styles.cardLabel}>{label}</Text>
+      </>
+    </View>
+    <Text style={styles.cardValue}>{value}</Text>
+  </View>
+);
+
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#1d1d1d",
+    backgroundColor: "#141217",
     borderRadius: 12,
     paddingVertical: 12,
     paddingHorizontal: 16,
   },
   item: {
+    marginTop: 10,
+    width: "100%%",
+    padding: 8,
+    backgroundColor: "#131F39",
+    borderRadius: 12,
+  },
+  itemRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingVertical: 14,
-    borderBottomWidth: 1,
-    borderColor: "#2e2e2e",
-  },
-  left: {
-    flexDirection: "row",
     alignItems: "center",
-    gap: 10,
   },
   label: {
     fontSize: 15,
-    color: "#fafafa",
+    color: "#00C8C8",
     fontWeight: "500",
   },
   value: {
-    fontSize: 15,
+    fontSize: 18,
     fontWeight: "600",
     color: "#fafafa",
+    alignSelf: "flex-end",
+    marginTop: 10,
   },
   typeItem: {
     fontSize: 14,
     color: "#fafafa",
     paddingVertical: 2,
+  },
+  cardRow: {
+    width: "100%",
+    marginTop: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  cardItem: {
+    width: "49%",
+    padding: 8,
+    backgroundColor: "#38151C",
+    borderRadius: 12,
+  },
+  rowHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  cardLabel: {
+    fontSize: 15,
+    color: "#FF0A3B",
+    fontWeight: "500",
+  },
+  cardValue: {
+    marginTop: 10,
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#fafafa",
+    alignSelf: "flex-end",
+  },
+  typesContainer: {
+    padding: 8,
+    width: "100%",
+    marginTop: 10,
+    backgroundColor: "#102329",
+    borderRadius: 12,
+  },
+  countCard: {
+    padding: 8,
+    marginRight: 8,
+    backgroundColor: "#E48300",
+    borderRadius: 12,
+    opacity: 0.5,
+    width: 120,
+    minHeight: 100,
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  typeText: {
+    fontSize: 12,
+    color: "#102329",
+    textTransform: "uppercase",
+    fontWeight: "500",
+  },
+  countText: {
+    fontSize: 22,
+    color: "#102329",
+    fontWeight: "800",
+  },
+  typeScroll: {
+    marginTop: 10,
   },
 });

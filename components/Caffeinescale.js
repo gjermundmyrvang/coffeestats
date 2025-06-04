@@ -8,14 +8,14 @@ export default function CaffeineScale({
   const percentage = Math.min((totalCaffeineMg / caffeineLimitMg) * 100, 100);
 
   let status = "You're good!";
-  let color = "#4CAF50";
+  let color = "#85B24A";
 
   if (percentage >= 90) {
     status = "You've had a lot!";
-    color = "#E53935";
+    color = "#E29958";
   } else if (percentage >= 60) {
     status = "Take it slow";
-    color = "#FFC107";
+    color = "#E25858";
   }
 
   return (
@@ -31,8 +31,7 @@ export default function CaffeineScale({
       </View>
       <Text style={[styles.status, { color }]}>{status}</Text>
       <Text style={styles.mgLabel}>
-        {Math.round(totalCaffeineMg)}mg / {caffeineLimitMg}mg (recommended
-        amount)
+        {Math.round(totalCaffeineMg)} / {caffeineLimitMg}mg (recommended amount)
       </Text>
     </View>
   );
@@ -41,19 +40,19 @@ export default function CaffeineScale({
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    paddingVertical: 14,
-    borderBottomWidth: 1,
-    borderColor: "#2e2e2e",
+    padding: 16,
+    backgroundColor: "#28252E",
+    borderRadius: 12,
   },
   title: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#fff",
+    color: "#fafafa",
     marginBottom: 10,
   },
   barBackground: {
     height: 14,
-    backgroundColor: "#444",
+    backgroundColor: "#423D4C",
     borderRadius: 10,
     overflow: "hidden",
     width: "100%",
@@ -69,7 +68,7 @@ const styles = StyleSheet.create({
   },
   mgLabel: {
     marginTop: 4,
-    color: "#aaa",
-    fontSize: 14,
+    color: "#B6B6B6",
+    fontSize: 12,
   },
 });
