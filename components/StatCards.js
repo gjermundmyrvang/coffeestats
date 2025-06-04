@@ -158,10 +158,10 @@ const ListItemCard = ({ icon, label, value }) => (
 
 const styles = StyleSheet.create({
   container: {
+    paddingVertical: 10,
+    paddingHorizontal: 10,
     backgroundColor: "#141217",
     borderRadius: 12,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
   },
   item: {
     marginTop: 10,
@@ -252,5 +252,6 @@ const styles = StyleSheet.create({
   },
   typeScroll: {
     marginTop: 10,
+    paddingBottom: 10,
   },
 });
