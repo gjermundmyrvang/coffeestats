@@ -9,6 +9,7 @@ import {
   View,
 } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
+import IconText from "./IconText";
 
 export default function History({ entries, onDelete }) {
   const [filter, setFilter] = useState("all");
@@ -69,7 +70,7 @@ export default function History({ entries, onDelete }) {
         <Text style={styles.noEntries}>No entries yet. Start logging! ☕</Text>
       ) : (
         <FlatList
-          data={filter === "all" ? entries.reverse() : groupedData}
+          data={filter === "all" ? entries : groupedData}
           keyExtractor={(item, index) => index.toString()}
           showsVerticalScrollIndicator={false}
           initialNumToRender={10}
@@ -103,13 +104,23 @@ const CoffeeCard = ({ item, onclick }) => (
 );
 
 const GroupedCoffeeCard = ({ item }) => (
-  <View style={styles.card}>
-    <Text style={styles.coffeeName}>
-      {item.name} ({item.count}x)
-    </Text>
-    <Text style={styles.caffeine}>
-      Total caffeine: {item.sumMg.toFixed(1)}mg
-    </Text>
+  <View style={styles.row}>
+    <View style={styles.accent} />
+    <View style={styles.content}>
+      <View style={styles.header}>
+        <Text style={styles.coffeeName}>{item.name}</Text>
+        <Text style={styles.count}>{item.count}x</Text>
+      </View>
+      <IconText
+        text={`${item.sumMg.toFixed(1)}mg total caffeine`}
+        iconName={"cafe-sharp"}
+        textStyle={{
+          fontSize: 13,
+          color: "#777",
+          fontStyle: "italic",
+        }}
+      />
+    </View>
   </View>
 );
 
@@ -146,24 +157,41 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   card: {
-    backgroundColor: "#fff",
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 10,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    elevation: 3,
-    position: "relative",
+    marginVertical: 5,
+    paddingBottom: 8,
+    borderBottomWidth: 1,
+    borderColor: "#eee",
+  },
+  row: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    marginBottom: 16,
+  },
+  accent: {
+    width: 4,
+    height: "100%",
+    backgroundColor: "#1d1d1d",
+    borderRadius: 2,
+    marginRight: 12,
+  },
+  content: {
+    flex: 1,
+    paddingBottom: 8,
+    borderBottomWidth: 1,
+    borderColor: "#eee",
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 4,
   },
   coffeeName: {
-    fontSize: 18,
-    fontWeight: "bold",
+    fontSize: 16,
+    fontWeight: "600",
   },
-  caffeine: {
-    fontSize: 14,
-    color: "#555",
+  count: {
+    fontSize: 16,
+    color: "#999",
   },
   date: {
     fontSize: 12,
