@@ -13,6 +13,7 @@ import { BuyMeCoffee } from "../components/BuyMeCoffee";
 import LevelCard from "../components/LevelCard";
 import { ProfileContext } from "../context/ProfileContext";
 import { levelsdata } from "../data/levels";
+import IconText from "../components/IconText";
 
 const levels = levelsdata;
 
@@ -71,13 +72,48 @@ export default function Profilescreen() {
       <View style={styles.container}>
         <Text style={styles.title}>Profile</Text>
         <View style={styles.card}>
-          <Text style={styles.name}>{profile?.name || "Unknown"}</Text>
-          <Text style={styles.info}>
-            Favorite coffee: {profile?.favCoffee || "edit in settings"}
-          </Text>
-          <Text style={styles.info}>
-            Favorite treat: {profile?.favTreat || "edit in settings"}
-          </Text>
+          <View style={styles.headerRow}>
+            <IconText
+              text={profile?.name || "Unknown"}
+              iconName="person-circle"
+              color="#1d1d1d"
+              size={48}
+              textStyle={{
+                fontSize: 22,
+                fontWeight: "bold",
+                color: "#222",
+              }}
+            />
+          </View>
+          <View style={styles.divider} />
+          <View style={styles.infoRow}>
+            <IconText
+              text={`Favorite coffee: ${
+                profile?.favCoffee || "edit in settings"
+              }`}
+              iconName="cafe-outline"
+              color="#888"
+              textStyle={{
+                fontSize: 16,
+                color: "#555",
+                flexShrink: 1,
+              }}
+            />
+          </View>
+          <View style={styles.infoRow}>
+            <IconText
+              text={`Favorite treat: ${
+                profile?.favTreat || "edit in settings"
+              }`}
+              iconName="ice-cream-outline"
+              color="#888"
+              textStyle={{
+                fontSize: 16,
+                color: "#555",
+                flexShrink: 1,
+              }}
+            />
+          </View>
         </View>
         <LevelCard level={level} points={profile.points} />
         <BuyMeCoffee />
@@ -124,7 +160,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   card: {
-    backgroundColor: "#fff",
+    backgroundColor: "rgba(255, 255, 255, 0.85)",
     padding: 20,
     borderRadius: 20,
     shadowColor: "#000",
@@ -134,17 +170,34 @@ const styles = StyleSheet.create({
     elevation: 4,
     width: "100%",
     maxWidth: 400,
+    backdropFilter: "blur(10px)", // only works on web, optional
+  },
+  headerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    marginBottom: 16,
   },
   name: {
     fontSize: 22,
     fontWeight: "bold",
     color: "#222",
-    marginBottom: 10,
   },
-  info: {
+  divider: {
+    height: 1,
+    backgroundColor: "#eee",
+    marginVertical: 10,
+  },
+  infoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    marginBottom: 8,
+  },
+  infoText: {
     fontSize: 16,
     color: "#555",
-    marginBottom: 5,
+    flexShrink: 1,
   },
   button: {
     width: "100%",
