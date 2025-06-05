@@ -33,12 +33,13 @@ export default function DailyMessage({ data, onClose }) {
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
+    width: "95%",
+    left: 10,
     bottom: 25,
     backgroundColor: "#1d1d1d",
     opacity: 0.95,
     borderRadius: 16,
     padding: 16,
-    marginHorizontal: 10,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.5,
