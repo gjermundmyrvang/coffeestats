@@ -145,13 +145,6 @@ export default function Homescreen() {
     }
   };
 
-  const handleScroll = (event) => {
-    const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
-    const isBottom =
-      layoutMeasurement.height + contentOffset.y >= contentSize.height - 200;
-    setShowHiddenList(isBottom);
-  };
-
   if (loading) {
     return (
       <View style={styles.loader}>
@@ -178,16 +171,12 @@ export default function Homescreen() {
             keyExtractor={(item) => item.name}
             initialNumToRender={10}
             maxToRenderPerBatch={10}
-            onScroll={handleScroll}
-            scrollEventThrottle={200}
             ListFooterComponent={
-              showHiddenList ? (
-                <HiddenCoffeeList
-                  hidden={hidden}
-                  coffeeData={coffeeData}
-                  onToggleHidden={toggleHidden}
-                />
-              ) : null
+              <HiddenCoffeeList
+                hidden={hidden}
+                coffeeData={coffeeData}
+                onToggleHidden={toggleHidden}
+              />
             }
             renderItem={({ item }) => (
               <CoffeeCard
