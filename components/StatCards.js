@@ -75,7 +75,9 @@ export const StatCards = ({ entries }) => {
           value={`${coffeesToday.length} cups`}
         />
         <ListItemCard
-          icon={<Ionicons name="cafe-outline" size={20} color="#FF0A3B" />}
+          icon={
+            <Ionicons name="heart-circle-sharp" size={20} color="#FF0A3B" />
+          }
           label="Caffeine Today"
           value={`${caffeineToday} mg`}
         />
@@ -117,7 +119,7 @@ export const StatCards = ({ entries }) => {
         />
       </View>
       <ListItem
-        icon={<Ionicons name="bar-chart" size={20} color="#00C8C8" />}
+        icon={<Ionicons name="time-sharp" size={20} color="#00C8C8" />}
         label="Most Active Hour"
         value={`${mostActiveHour}:00`}
       />
