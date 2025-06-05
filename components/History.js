@@ -69,7 +69,7 @@ export default function History({ entries, onDelete }) {
         <Text style={styles.noEntries}>No entries yet. Start logging! ☕</Text>
       ) : (
         <FlatList
-          data={filter === "all" ? entries.reverse() : groupedData}
+          data={filter === "all" ? entries : groupedData}
           keyExtractor={(item, index) => index.toString()}
           showsVerticalScrollIndicator={false}
           initialNumToRender={10}
